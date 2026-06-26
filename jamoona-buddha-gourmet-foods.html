@@ -21,25 +21,16 @@
     padding: 48px 40px 56px;
   }
 
-  /* HEADER */
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-bottom: 16px;
     border-bottom: 2px solid #008929;
-    margin-bottom: 0;
   }
-  .header img {
-    max-height: 48px;
-    width: auto;
-  }
-  .header-date {
-    font-size: 13px;
-    color: #767676;
-  }
+  .header img { max-height: 48px; width: auto; }
+  .header-date { font-size: 13px; color: #767676; }
 
-  /* BANNER */
   .banner {
     background: #F2FAF3;
     border-left: 4px solid #008929;
@@ -47,116 +38,42 @@
     margin-bottom: 44px;
   }
   .banner-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-    color: #008929;
-    margin-bottom: 4px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.13em;
+    text-transform: uppercase; color: #008929; margin-bottom: 4px;
   }
-  .banner-company {
-    font-size: 22px;
-    font-weight: 700;
-    color: #1A1A1A;
-    margin-bottom: 4px;
-  }
-  .banner-subtitle {
-    font-size: 13px;
-    color: #5A5A5A;
-  }
+  .banner-company { font-size: 22px; font-weight: 700; color: #1A1A1A; margin-bottom: 4px; }
+  .banner-subtitle { font-size: 13px; color: #5A5A5A; }
 
-  /* SECTIONS */
   .section-label {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-    color: #008929;
-    margin-bottom: 12px;
+    font-size: 14px; font-weight: 700; letter-spacing: 0.13em;
+    text-transform: uppercase; color: #008929; margin-bottom: 12px;
   }
+  .section-body { color: #2E2E2E; margin-bottom: 32px; }
+  .section-body p + p { margin-top: 12px; }
 
-  .section-body {
-    color: #2E2E2E;
-    margin-bottom: 32px;
-  }
+  hr { border: none; border-top: 1px solid #EAEAEA; margin: 32px 0; }
 
-  .section-body p + p {
-    margin-top: 12px;
-  }
+  .section-gap { border-left: 4px solid #B4E330; padding-left: 20px; }
 
-  hr {
-    border: none;
-    border-top: 1px solid #EAEAEA;
-    margin: 32px 0;
-  }
-
-  /* SECTION 2 ACCENT */
-  .section-gap {
-    border-left: 4px solid #B4E330;
-    padding-left: 20px;
-  }
-
-  /* SKU GRID */
   .sku-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 16px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-top: 16px;
   }
-
   .sku-card {
-    background: #F7F9F7;
-    border: 1px solid #E0E8E0;
-    border-radius: 4px;
-    padding: 16px 18px;
+    background: #F7F9F7; border: 1px solid #E0E8E0;
+    border-radius: 4px; padding: 16px 18px;
   }
-
-  .sku-card h3 {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1A1A1A;
-    margin-bottom: 4px;
-  }
-
+  .sku-card h3 { font-size: 14px; font-weight: 700; color: #1A1A1A; margin-bottom: 4px; }
   .sku-tag {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-    color: #008929;
-    margin-bottom: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.13em;
+    text-transform: uppercase; color: #008929; margin-bottom: 6px;
   }
+  .sku-note { font-size: 12px; color: #767676; line-height: 1.5; }
 
-  .sku-note {
-    font-size: 12px;
-    color: #767676;
-    line-height: 1.5;
-  }
-
-  /* FOOTER */
-  .footer {
-    border-top: 1px solid #E8EDE8;
-    padding-top: 20px;
-    margin-top: 40px;
-  }
-
-  .footer-brand {
-    font-size: 12px;
-    font-weight: 700;
-    color: #008929;
-    margin-bottom: 4px;
-  }
-
-  .footer-details {
-    font-size: 12px;
-    color: #767676;
-  }
-
-  .footer-details a {
-    color: #767676;
-    text-decoration: none;
-    border-bottom: 1px solid #D0D0D0;
-  }
+  .footer { border-top: 1px solid #E8EDE8; padding-top: 20px; margin-top: 40px; }
+  .footer-brand { font-size: 12px; font-weight: 700; color: #008929; margin-bottom: 4px; }
+  .footer-details { font-size: 12px; color: #767676; }
+  .footer-details a { color: #767676; text-decoration: none; border-bottom: 1px solid #D0D0D0; }
 
   @media print {
     .banner { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
@@ -166,106 +83,99 @@
 <body>
 <div class="page">
 
-  <!-- HEADER -->
   <div class="header">
-    <img src="https://minzelis.com/cdn/shop/files/minzelis-logo.png" alt="Minzelis" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <img src="https://minzelis.com/cdn/shop/files/minzelis-logo.png" alt="Minzelis"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
     <span style="display:none;font-size:20px;font-weight:700;color:#008929;letter-spacing:0.05em;">MINZELIS</span>
     <span class="header-date">June 2026</span>
   </div>
 
-  <!-- PERSONALIZATION BANNER -->
   <div class="banner">
     <div class="banner-label">Prepared for</div>
     <div class="banner-company">Jamoona (Buddha Gourmet Foods GmbH)</div>
     <div class="banner-subtitle">Category Opportunity Brief &mdash; South Indian &amp; Kerala Ambient Food</div>
   </div>
 
-  <!-- SECTION 1 -->
   <div class="section-label">Your Current Range</div>
   <div class="section-body">
-    <p>Jamoona has built one of Europe's strongest D2C Indian grocery platforms, with a well-stocked range spanning Haldiram's, Daawat, Aashirvaad, Priya, Mother's Recipe, and Ashoka across snacks, staples, and pickles. The breadth you offer across North Indian and pan-Indian categories is clear, and it shows in the 150,000+ customers you serve across Germany and the Netherlands.</p>
+    <p>Jamoona has built a strong South Indian presence across its platform, with Nirapara covering Kerala-style pickles, Telugu and Priya handling the broader South Indian pickle range, and Haldiram's Kerala Mix and Telugu jackfruit chips giving some South Indian snack coverage. Across staples, the Daawat and Aashirvaad ranges are well-stocked, and the platform clearly serves a South Indian diaspora audience across Germany and the Netherlands.</p>
   </div>
 
   <hr>
 
-  <!-- SECTION 2 -->
   <div class="section-label">The Gap We Noticed</div>
   <div class="section-body section-gap">
-    <p>Your snack range covers banana chips, but the wider Kerala ambient category is missing. Tapioca chips, jackfruit chips, Kerala mixtures, pakkavada, murukku — these are products that Kerala and broader South Indian diaspora customers in NL and DE actively search for, and currently cannot find on jamoona.com as a named Kerala brand.</p>
-    <p>The pickle side tells the same story. Your current pickle range runs Priya (Andhra), Mother's Recipe (North Indian), Ashoka, and Ahmed — strong brands for North and pan-Indian buyers. There is no Kerala-style pickle in the mix. Tender mango, lime, gooseberry, ginger — these are distinct from North Indian pickles and serve a different palate entirely.</p>
-    <p>For a platform with your audience size in Germany and the Netherlands, a Kerala-origin ambient brand would close the one South Indian segment that currently has no dedicated presence.</p>
+    <p>The South Indian snack range has one notable gap: Kerala ambient snacks beyond banana chips and jackfruit chips. Tapioca chips, pakkavada, regional mixtures from Malabar, Calicut, and Payyoli, and murukku varieties are products with strong repeat-purchase behaviour among Kerala diaspora customers. None of these are currently on the platform under any brand.</p>
+    <p>On the pickle side, Nirapara covers tender mango and kaduku mango well. But Kerala-specific pickle formats that fall outside the mango category are absent: gooseberry (amla), ginger, garlic, and white lime pickles. These are distinct from the Priya and Mother's Recipe ranges already stocked, and they serve the same South Indian buyer base that Nirapara's customers belong to.</p>
+    <p>Minzelis closes both of these gaps under one brand, with a range designed for European retail from the ground up.</p>
   </div>
 
   <hr>
 
-  <!-- SECTION 3 -->
   <div class="section-label">Why This Category Moves</div>
   <div class="section-body">
-    <p>The South Indian diaspora in Germany and the Netherlands is a distinct and growing buyer segment. For Kerala and Tamil families in particular, the snacks they grew up with are not interchangeable with North Indian namkeens. Jackfruit chips, tapioca sticks, and Kerala mixture occupy a very specific taste memory — customers who know these products buy them repeatedly, and they tend to seek them out rather than settle.</p>
-    <p>The category is already proven in UK and German Indian retail. What is less established is a branded Kerala ambient range that arrives shelf-ready for a European platform, with consistent supply and proper EU labelling. That is the commercial opening.</p>
-    <p>Your existing customers browsing jamoona.com and finding Haldiram's Dakshin Banana Chips are the same customers who would add a Kerala tapioca chips or a tender mango pickle to their basket if it were there. The demand is already in your traffic — it just has no product to land on yet.</p>
+    <p>The Kerala and broader South Indian diaspora in Germany and the Netherlands buys specific snacks, not generic Indian alternatives. A customer who knows tapioca chips from home does not substitute them with potato chips or banana chips. The same applies to pakkavada and to Kerala-style pickles beyond mango. These are distinct products with a loyal, habitual customer base.</p>
+    <p>The fact that Nirapara is already performing on the platform is the proof point. It confirms that Jamoona's South Indian customers respond to Kerala-branded products and seek them out. What Nirapara covers in pickles, Minzelis can cover in ambient snacks and in the non-mango pickle formats that sit adjacent to Nirapara's range rather than competing with it.</p>
+    <p>A 105-SKU range from one Kerala-origin supplier, already shipping to 16 countries through Gramarhein, means the supply side is straightforward and the range can be introduced incrementally.</p>
   </div>
 
   <hr>
 
-  <!-- SECTION 4 -->
   <div class="section-label">What Minzelis Brings</div>
   <div class="section-body">
-    <p>Minzelis is a Kerala-origin ambient food brand, produced in Calicut and distributed across Europe through Gramarhein, an export operation already shipping to 16 countries. The range covers 105 SKUs across 8 categories, all EU-labelled and ambient shelf-ready. Below are the SKUs most relevant to what jamoona.com is currently missing.</p>
+    <p>Minzelis is produced in Calicut, distributed across Europe through Gramarhein, an export operation already active in 16 countries. All SKUs are EU-labelled and ambient shelf-ready. Below are the items most directly relevant to what Jamoona's South Indian buyers are currently unable to find on the platform.</p>
   </div>
 
   <div class="sku-grid">
     <div class="sku-card">
       <div class="sku-tag">Snacks</div>
       <h3>Tapioca Chips &amp; Tapioca Chips Spicy</h3>
-      <p class="sku-note">Classic Kerala tapioca, two heat levels. Entirely absent from the Jamoona range.</p>
-    </div>
-    <div class="sku-card">
-      <div class="sku-tag">Snacks</div>
-      <h3>Jackfruit Chips</h3>
-      <p class="sku-note">Distinctive Kerala snack, no equivalent on jamoona.com. High repeat-purchase for diaspora buyers.</p>
-    </div>
-    <div class="sku-card">
-      <div class="sku-tag">Snacks</div>
-      <h3>Kerala Mixture &amp; Kerala Mixture Hot &amp; Spicy</h3>
-      <p class="sku-note">Traditional Kerala blend, distinct from Haldiram's Bombay-style mixtures. Two variants.</p>
+      <p class="sku-note">Classic Kerala snack, entirely absent from the platform. Two heat levels, strong repeat purchase.</p>
     </div>
     <div class="sku-card">
       <div class="sku-tag">Snacks</div>
       <h3>Pakkavada</h3>
-      <p class="sku-note">Kerala rice flour ribbon snack. Niche but high-affinity product for South Indian buyers.</p>
-    </div>
-    <div class="sku-card">
-      <div class="sku-tag">Pickles</div>
-      <h3>Tender Mango Pickle &amp; Kaduku Mango Pickle</h3>
-      <p class="sku-note">Kerala mango pickle styles, different in flavour profile from North Indian mango pickle.</p>
-    </div>
-    <div class="sku-card">
-      <div class="sku-tag">Pickles</div>
-      <h3>Lime Pickle &amp; Gooseberry (Amla) Pickle</h3>
-      <p class="sku-note">Two Kerala staple pickles with no current equivalent on the platform.</p>
+      <p class="sku-note">Kerala rice flour ribbon snack. High-affinity, no equivalent on Jamoona currently.</p>
     </div>
     <div class="sku-card">
       <div class="sku-tag">Snacks</div>
       <h3>Malabar Mixture &amp; Calicut Mixture</h3>
-      <p class="sku-note">Region-specific blends from Malabar/Calicut, strong identity for Kerala buyers.</p>
+      <p class="sku-note">Regional blends distinct from Haldiram's Kerala Mix. Two specific origin identities.</p>
     </div>
     <div class="sku-card">
-      <div class="sku-tag">Pulses</div>
-      <h3>Red Cow Peas &amp; Urid Whole Gota</h3>
-      <p class="sku-note">Kerala staple pulses, complement the dal range already on jamoona.com.</p>
+      <div class="sku-tag">Snacks</div>
+      <h3>Garlic Murukku &amp; Ring Murukku</h3>
+      <p class="sku-note">Kerala-style murukku variants, no murukku currently listed on the platform.</p>
+    </div>
+    <div class="sku-card">
+      <div class="sku-tag">Pickles</div>
+      <h3>Gooseberry (Amla) Pickle &amp; Ginger Pickle</h3>
+      <p class="sku-note">Kerala-specific pickle formats not covered by Nirapara or Priya. Genuine gap.</p>
+    </div>
+    <div class="sku-card">
+      <div class="sku-tag">Pickles</div>
+      <h3>Garlic Pickle &amp; White Lime Pickle</h3>
+      <p class="sku-note">Two further Kerala pickle styles absent from the current range, natural add-on for Nirapara buyers.</p>
+    </div>
+    <div class="sku-card">
+      <div class="sku-tag">Breakfast</div>
+      <h3>White Puttupodi &amp; Roasted Red Rice Flakes</h3>
+      <p class="sku-note">Kerala breakfast staples, no equivalent listed. Serve the same South Indian buyer.</p>
+    </div>
+    <div class="sku-card">
+      <div class="sku-tag">Snacks</div>
+      <h3>Tapioca Sticks &amp; Tapioca Sticks Spicy</h3>
+      <p class="sku-note">Different format from tapioca chips, broadens the Kerala snack section.</p>
     </div>
   </div>
 
   <hr>
 
-  <!-- SECTION 5 -->
   <div class="section-label">Next Step</div>
   <div class="section-body">
     <p>If this looks like a fit for the Jamoona range, we are happy to share the full catalogue for the SKUs most relevant to your buyers. Just reply to this email and we will take it from there.</p>
   </div>
 
-  <!-- FOOTER -->
   <div class="footer">
     <div class="footer-brand">Minzelis &mdash; South Indian Food, European Standards</div>
     <div class="footer-details">
