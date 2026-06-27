@@ -24,11 +24,11 @@
   .wrapper { max-width: 740px; margin: 0 auto; padding: 64px 40px; position: relative; z-index: 10; }
   .section-spacer { height: 64px; }
 
-  /* Decorative floating leaves — fixed so always visible in viewport */
-  .floating-leaf { position: fixed; z-index: -1; animation: float 8s ease-in-out infinite; pointer-events: none; }
-  .leaf-1 { top: 8%; left: 0; width: 90px; filter: blur(2px); opacity: 0.7; transform-origin: left center; }
-  .leaf-2 { top: 45%; right: 0; width: 80px; animation-delay: 2s; opacity: 0.65; filter: blur(1px); transform-origin: right center; }
-  .leaf-3 { bottom: 12%; left: 0; width: 85px; filter: blur(2px); opacity: 0.65; animation-delay: 4s; transform-origin: left center; }
+  /* Decorative floating leaves — absolute so they scroll naturally with the page */
+  .floating-leaf { position: absolute; z-index: -1; animation: float 8s ease-in-out infinite; pointer-events: none; }
+  .leaf-1 { top: 6%; left: 10px; width: 100px; filter: blur(2px); opacity: 0.7; transform-origin: left center; }
+  .leaf-2 { top: 38%; right: 10px; width: 85px; animation-delay: 2s; opacity: 0.65; filter: blur(1px); transform-origin: right center; }
+  .leaf-3 { top: 72%; left: 10px; width: 90px; filter: blur(2px); opacity: 0.65; animation-delay: 4s; transform-origin: left center; }
   @keyframes float {
     0% { transform: translateY(0px) rotate(0deg); }
     50% { transform: translateY(-20px) rotate(5deg); }
