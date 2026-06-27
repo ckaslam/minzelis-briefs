@@ -24,11 +24,11 @@
   .wrapper { max-width: 740px; margin: 0 auto; padding: 64px 40px; position: relative; z-index: 10; }
   .section-spacer { height: 64px; }
 
-  /* Decorative floating leaves */
-  .floating-leaf { position: absolute; z-index: -1; animation: float 8s ease-in-out infinite; pointer-events: none; }
-  .leaf-1 { top: 5%; left: -10%; width: 120px; filter: blur(3px); opacity: 0.8; }
-  .leaf-2 { top: 40%; right: -5%; width: 90px; animation-delay: 2s; }
-  .leaf-3 { bottom: 10%; left: 0%; width: 100px; filter: blur(1px); animation-delay: 4s; }
+  /* Decorative floating leaves — fixed so always visible in viewport */
+  .floating-leaf { position: fixed; z-index: -1; animation: float 8s ease-in-out infinite; pointer-events: none; }
+  .leaf-1 { top: 8%; left: 0; width: 90px; filter: blur(2px); opacity: 0.7; transform-origin: left center; }
+  .leaf-2 { top: 45%; right: 0; width: 80px; animation-delay: 2s; opacity: 0.65; filter: blur(1px); transform-origin: right center; }
+  .leaf-3 { bottom: 12%; left: 0; width: 85px; filter: blur(2px); opacity: 0.65; animation-delay: 4s; transform-origin: left center; }
   @keyframes float {
     0% { transform: translateY(0px) rotate(0deg); }
     50% { transform: translateY(-20px) rotate(5deg); }
@@ -110,7 +110,6 @@
   <p>Elite covers flours. Nirmal covers rice and basic pickles. Neither touches ambient snacks. Minzelis fills the one category your portfolio currently has no answer for, without competing with anything you already carry.</p>
   <p>Beyond snacks, Minzelis also brings pickle variants your Nirmal range does not carry — Kaduku Mango, Gooseberry, and Ginger Pickle — plus Coconut Chutney Powder and Idli/Dosa Chutney Powder, which are absent across your entire portfolio today.</p>
   <p>Minzelis is managed from Germany and backed by Gramarhein's export-proven infrastructure, actively shipping to 16 countries, giving you an EU-compliant route to capture this category gap.</p>
-  <img src="https://gramarhein.com/wp-content/uploads/2020/08/h5_quality.png" class="proof-badge" alt="Quality assured">
 
   <div class="section-spacer"></div>
 
