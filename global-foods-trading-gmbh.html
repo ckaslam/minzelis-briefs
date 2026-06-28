@@ -4,17 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Minzelis — Category Opportunity Brief for Global Foods Trading GmbH</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: #FAFAF8;
-    color: #1A1A1A;
-    font-family: 'Inter', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-size: 15px;
     line-height: 1.7;
+    color: #1A1A1A;
+    background: #FFFFFF;
     position: relative;
     overflow-x: hidden;
   }
@@ -30,184 +28,182 @@
   .leaf-2 { right: 10px; top: 38%; }
   .leaf-3 { left: 10px; top: 72%; }
 
-  .wrapper {
-    max-width: 760px;
+  .page {
+    max-width: 740px;
     margin: 0 auto;
-    padding: 48px 32px 80px;
+    padding: 48px 40px 56px;
   }
 
   /* HEADER */
   .header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding-bottom: 40px;
-    border-bottom: 1px solid #E8E8E4;
-    margin-bottom: 48px;
+    justify-content: space-between;
+    padding-bottom: 18px;
+    border-bottom: 2px solid #008929;
+    margin-bottom: 0;
   }
-  .header .date {
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #888;
+  .header img {
+    max-height: 48px;
+    width: auto;
+    display: block;
+  }
+  .header-date {
+    font-size: 13px;
+    color: #767676;
     font-weight: 400;
+    white-space: nowrap;
   }
 
-  /* BANNER */
+  /* PERSONALIZATION BANNER */
   .banner {
-    background: #1A1A1A;
-    padding: 40px 44px;
-    margin-bottom: 64px;
-    position: relative;
+    background: #F2FAF3;
+    border-left: 4px solid #008929;
+    padding: 18px 24px;
+    margin-top: 0;
+    margin-bottom: 44px;
   }
   .banner-label {
     font-size: 11px;
-    letter-spacing: 0.18em;
+    font-weight: 700;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
-    color: #888;
-    display: block;
-    margin-bottom: 12px;
-    font-weight: 400;
+    color: #008929;
+    margin-bottom: 4px;
   }
-  .banner h1 {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 2.6rem;
-    font-weight: 500;
-    color: #FFFFFF;
-    line-height: 1.15;
-    margin-bottom: 10px;
+  .banner-company {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 3px;
+    line-height: 1.25;
   }
-  .banner .subtitle {
+  .banner-subtitle {
     font-size: 13px;
-    color: #AAAAAA;
-    letter-spacing: 0.04em;
-    font-weight: 300;
+    color: #5A5A5A;
   }
 
   /* SECTION LABEL */
   .section-label {
-    display: block;
-    font-size: 11px;
-    letter-spacing: 0.18em;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
-    color: #888;
-    margin-bottom: 20px;
-    font-weight: 400;
+    color: #008929;
+    margin-bottom: 14px;
+    display: block;
   }
 
-  /* BODY PROSE */
-  .prose {
-    font-family: 'Inter', sans-serif;
+  /* SECTION BODY */
+  .section {
+    margin-bottom: 40px;
+  }
+  .section p {
+    color: #2E2E2E;
+    margin-bottom: 14px;
     font-size: 15px;
-    line-height: 1.8;
-    color: #333;
-    font-weight: 300;
   }
-  .prose strong {
-    font-weight: 500;
+  .section p:last-child { margin-bottom: 0; }
+
+  /* SECTION DIVIDER */
+  hr {
+    border: none;
+    border-top: 1px solid #EAEAEA;
+    margin: 0 0 40px 0;
+  }
+
+  /* SECTION 2 — GAP (lime left-border accent, used ONCE) */
+  .section-gap {
+    margin-bottom: 40px;
+    border-left: 4px solid #B4E330;
+    padding-left: 20px;
+  }
+  .section-gap .section-label {
+    color: #008929;
+  }
+  .section-gap p {
+    color: #2E2E2E;
+    margin-bottom: 14px;
+    font-size: 15px;
+  }
+  .section-gap p:last-child { margin-bottom: 0; }
+  .section-gap p strong {
     color: #1A1A1A;
   }
 
-  /* SECTION SPACER */
-  .section-spacer { height: 64px; }
-
-  /* PULL QUOTE */
-  .gap-quote {
-    border-left: 3px solid #B4E330;
-    padding: 20px 28px;
-    margin: 28px 0;
-    background: #F5FAE8;
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 1.25rem;
-    font-weight: 500;
+  /* SECTION BODY strong */
+  .section p strong {
     color: #1A1A1A;
-    line-height: 1.5;
   }
 
   /* SKU GRID */
   .sku-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-    margin-top: 8px;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
   }
   .sku-card {
-    background: #FFFFFF;
-    border: 1px solid #EAEAEA;
-    border-radius: 8px;
-    padding: 20px 18px;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
-    cursor: default;
+    background: #F7F9F7;
+    border: 1px solid #E0E8E0;
+    border-radius: 4px;
+    padding: 16px 18px;
   }
-  .sku-card:hover {
-    box-shadow: 0 6px 24px rgba(0,0,0,0.07);
-    transform: translateY(-2px);
+  .sku-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 5px;
+    line-height: 1.35;
   }
   .sku-tag {
-    display: inline-block;
-    font-size: 10px;
-    letter-spacing: 0.12em;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #888;
-    background: #F2F2EE;
-    padding: 3px 8px;
-    border-radius: 3px;
-    margin-bottom: 10px;
-    font-weight: 400;
-  }
-  .sku-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: #1A1A1A;
-    line-height: 1.4;
-    margin-bottom: 4px;
+    color: #008929;
+    margin-bottom: 5px;
+    display: block;
   }
   .sku-note {
     font-size: 12px;
-    color: #999;
-    font-weight: 300;
+    color: #767676;
+    line-height: 1.5;
   }
 
   /* FOOTER */
   .footer {
-    margin-top: 72px;
-    padding-top: 28px;
-    border-top: 1px solid #E8E8E4;
-    text-align: center;
+    border-top: 1px solid #E8EDE8;
+    padding-top: 20px;
+    margin-top: 44px;
   }
-  .footer .tagline {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 1.05rem;
-    font-weight: 500;
-    color: #1A1A1A;
-    letter-spacing: 0.04em;
-    margin-bottom: 8px;
-  }
-  .footer .meta {
+  .footer-brand {
     font-size: 12px;
-    color: #999;
-    font-weight: 300;
-    letter-spacing: 0.04em;
+    font-weight: 700;
+    color: #008929;
+    margin-bottom: 5px;
   }
-  .footer .meta a {
-    color: #666;
+  .footer-details {
+    font-size: 12px;
+    color: #767676;
+  }
+  .footer-details a {
+    color: #767676;
     text-decoration: none;
-  }
-  .footer .meta a:hover {
-    color: #1A1A1A;
-  }
-
-  @media (max-width: 600px) {
-    .wrapper { padding: 32px 20px 60px; }
-    .banner h1 { font-size: 2rem; }
-    .banner { padding: 28px 24px; }
-    .sku-grid { grid-template-columns: 1fr 1fr; }
-    .floating-leaf { width: 70px; }
+    border-bottom: 1px solid #D0D0D0;
   }
 
   @media print {
     .floating-leaf { display: none; }
     .banner { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .page { padding: 32px 32px 40px; }
+  }
+
+  @media (max-width: 520px) {
+    .page { padding: 28px 20px 36px; }
+    .sku-grid { grid-template-columns: 1fr; }
+    .banner-company { font-size: 18px; }
+    .floating-leaf { width: 70px; }
   }
 </style>
 </head>
@@ -217,116 +213,117 @@
 <img src="https://gramarhein.com/wp-content/uploads/2020/08/h4_leaf-1.png" class="floating-leaf leaf-2" alt="">
 <img src="https://gramarhein.com/wp-content/uploads/2020/08/h4_leaf-3.png" class="floating-leaf leaf-3" alt="">
 
-<div class="wrapper">
+<div class="page">
 
   <!-- HEADER -->
   <div class="header">
-    <img src="https://minzelis.com/wp-content/uploads/2025/07/minzelis-logo-scaled.png" style="max-height: 44px;" alt="Minzelis">
-    <span class="date">June 2026</span>
+    <img src="https://minzelis.com/wp-content/uploads/2025/07/minzelis-logo-scaled.png" alt="Minzelis">
+    <span class="header-date">June 2026</span>
   </div>
 
   <!-- BANNER -->
   <div class="banner">
-    <span class="banner-label">Prepared for</span>
-    <h1>Global Foods Trading GmbH</h1>
-    <p class="subtitle">Category Opportunity Brief, South Indian and Kerala Ambient Food</p>
+    <div class="banner-label">Prepared for</div>
+    <div class="banner-company">Global Foods Trading GmbH</div>
+    <div class="banner-subtitle">Category Opportunity Brief — South Indian and Kerala Ambient Food</div>
   </div>
 
   <!-- SECTION 1: CURRENT RANGE ANALYSIS -->
-  <span class="section-label">Current Range Analysis</span>
-  <p class="prose">
-    GFT has built one of the strongest South Asian supply positions in Europe, anchored by <strong>Haldiram's</strong> for North Indian snacks, <strong>TRS</strong> across spices and pulses, and the in-house <strong>Schani</strong> brand for everyday Indian cooking. The move into South Indian cuisine via <strong>Anjappar</strong> — Chettinad sauces and cooking products — shows GFT has already identified South Indian as a growth segment worth owning. The 4,000-plus SKU catalogue represents a genuinely comprehensive pan-Asian range, with meaningful exclusive distribution rights across five product verticals.
-  </p>
-  <div class="section-spacer"></div>
+  <div class="section">
+    <span class="section-label">Current Range Analysis</span>
+    <p>GFT has built one of the strongest South Asian supply positions in Europe, anchored by <strong>Haldiram's</strong> for North Indian snacks, <strong>TRS</strong> across spices and pulses, and the in-house <strong>Schani</strong> brand for everyday Indian cooking. The move into South Indian cuisine via <strong>Anjappar</strong> — Chettinad sauces and cooking products — shows GFT has already identified South Indian as a growth segment worth owning. The 4,000-plus SKU catalogue represents a genuinely comprehensive pan-Asian range, with meaningful exclusive distribution rights across five product verticals.</p>
+  </div>
 
-  <!-- SECTION 2: COMMERCIAL GAP -->
-  <span class="section-label">The Commercial Gap</span>
-  <blockquote class="gap-quote">
-    Anjappar captures Chettinad cooking. The Kerala ambient shelf — banana chips, tapioca chips, jackfruit chips, regional mixtures, and South Indian pickles — remains entirely absent from GFT's 4,000-product portfolio, leaving a daily-purchase, diaspora-driven category uncaptured across five European markets.
-  </blockquote>
-  <p class="prose">
-    Kerala-origin ambient snacks are not a niche. They are the everyday food of a distinct, high-purchasing South Indian diaspora population spread across GFT's UK, Germany, and Netherlands customer base. Unlike Chettinad cooking products, which are occasional purchases, banana chips and Kerala mixtures are weekly staples. No brand in GFT's current range addresses this. The shelf space and the customer demand exist — the supply connection does not.
-  </p>
-  <div class="section-spacer"></div>
+  <hr>
+
+  <!-- SECTION 2: THE COMMERCIAL GAP -->
+  <div class="section-gap">
+    <span class="section-label">The Commercial Gap</span>
+    <p><strong>Anjappar captures Chettinad cooking. The Kerala ambient shelf — banana chips, tapioca chips, jackfruit chips, regional mixtures, and South Indian pickles — remains entirely absent from GFT's 4,000-product portfolio, leaving a daily-purchase, diaspora-driven category uncaptured across five European markets.</strong></p>
+    <p>Kerala-origin ambient snacks are not a niche. They are the everyday food of a distinct, high-purchasing South Indian diaspora population spread across GFT's UK, Germany, and Netherlands customer base. Unlike Chettinad cooking products, which are occasional purchases, banana chips and Kerala mixtures are weekly staples. No brand in GFT's current range addresses this. The shelf space and the customer demand exist — the supply connection does not.</p>
+  </div>
+
+  <hr>
 
   <!-- SECTION 3: THE MINZELIS SOLUTION -->
-  <span class="section-label">The Minzelis Solution</span>
-  <p class="prose">
-    Minzelis is a premium South Indian and Kerala ambient food brand, managed from Germany and built specifically for the European retail and wholesale channel. The range covers Kerala snacks, South Indian pickles, pulses, and pantry staples — the categories GFT's current portfolio does not reach.
-  </p>
-  <p class="prose" style="margin-top: 16px;">
-    The brands GFT carries — Haldiram's, TRS, Schani, Anjappar — do not overlap with Minzelis. This is a genuinely additive range, not a substitution. South Indian and North Indian shoppers are largely buying different products. Adding Minzelis does not cannibalise existing GFT volume; it captures a different basket.
-  </p>
-  <p class="prose" style="margin-top: 16px;">
-    Minzelis is managed from Germany and backed by Gramarhein's export-proven infrastructure, actively shipping to 16 countries, giving GFT an EU-compliant, documentation-ready route to capture this category across all five of your European markets in one relationship.
-  </p>
-  <div class="section-spacer"></div>
+  <div class="section">
+    <span class="section-label">The Minzelis Solution</span>
+    <p>Minzelis is a premium South Indian and Kerala ambient food brand, managed from Germany and built specifically for the European retail and wholesale channel. The range covers Kerala snacks, South Indian pickles, pulses, and pantry staples — the categories GFT's current portfolio does not reach.</p>
+    <p>The brands GFT carries — Haldiram's, TRS, Schani, Anjappar — do not overlap with Minzelis. This is a genuinely additive range, not a substitution. South Indian and North Indian shoppers are largely buying different products. Adding Minzelis does not cannibalise existing GFT volume; it captures a different basket.</p>
+    <p>Minzelis is managed from Germany and backed by Gramarhein's export-proven infrastructure, actively shipping to 16 countries, giving GFT an EU-compliant, documentation-ready route to capture this category across all five of your European markets in one relationship.</p>
+  </div>
+
+  <hr>
 
   <!-- SECTION 4: CURATED SKU SELECTION -->
-  <span class="section-label">Curated for Your Range</span>
-  <div class="sku-grid">
+  <div class="section">
+    <span class="section-label">Curated for Your Range</span>
+    <p>Selected for GFT's customer base across the UK, Germany, and the Netherlands — products with no direct equivalent in your current 4,000-product range.</p>
+    <div class="sku-grid">
 
-    <div class="sku-card">
-      <span class="sku-tag">Snacks</span>
-      <p class="sku-title">Kerala Banana Chips (Salted)</p>
-      <p class="sku-note">Weekly staple for South Indian households</p>
+      <div class="sku-card">
+        <span class="sku-tag">Snacks</span>
+        <h3>Kerala Banana Chips (Salted)</h3>
+        <p class="sku-note">Weekly staple for South Indian households</p>
+      </div>
+
+      <div class="sku-card">
+        <span class="sku-tag">Snacks</span>
+        <h3>Kerala Banana Chips (Coconut Oil)</h3>
+        <p class="sku-note">Premium variant, high repeat purchase</p>
+      </div>
+
+      <div class="sku-card">
+        <span class="sku-tag">Snacks</span>
+        <h3>Tapioca Chips</h3>
+        <p class="sku-note">Distinctly Kerala, no direct competitor in GFT's range</p>
+      </div>
+
+      <div class="sku-card">
+        <span class="sku-tag">Snacks</span>
+        <h3>Jackfruit Chips</h3>
+        <p class="sku-note">Seasonal signature, strong gifting and sharing format</p>
+      </div>
+
+      <div class="sku-card">
+        <span class="sku-tag">Snacks</span>
+        <h3>Kerala Mixture</h3>
+        <p class="sku-note">Everyday snacking, South Indian retail staple</p>
+      </div>
+
+      <div class="sku-card">
+        <span class="sku-tag">Snacks</span>
+        <h3>Pakkavada</h3>
+        <p class="sku-note">Kerala-origin rice flour snack, low competition in EU market</p>
+      </div>
+
+      <div class="sku-card">
+        <span class="sku-tag">Pickles</span>
+        <h3>Kerala Mango Pickle</h3>
+        <p class="sku-note">South Indian style, distinct from North Indian variants in range</p>
+      </div>
+
+      <div class="sku-card">
+        <span class="sku-tag">Pickles</span>
+        <h3>Kerala Lime Pickle</h3>
+        <p class="sku-note">Complements rice-based meal occasions, consistent volume</p>
+      </div>
+
     </div>
-
-    <div class="sku-card">
-      <span class="sku-tag">Snacks</span>
-      <p class="sku-title">Kerala Banana Chips (Coconut Oil)</p>
-      <p class="sku-note">Premium variant, high repeat purchase</p>
-    </div>
-
-    <div class="sku-card">
-      <span class="sku-tag">Snacks</span>
-      <p class="sku-title">Tapioca Chips</p>
-      <p class="sku-note">Distinctly Kerala, no direct competitor in GFT's range</p>
-    </div>
-
-    <div class="sku-card">
-      <span class="sku-tag">Snacks</span>
-      <p class="sku-title">Jackfruit Chips</p>
-      <p class="sku-note">Seasonal signature, strong gifting and sharing format</p>
-    </div>
-
-    <div class="sku-card">
-      <span class="sku-tag">Snacks</span>
-      <p class="sku-title">Kerala Mixture</p>
-      <p class="sku-note">Everyday snacking, South Indian retail staple</p>
-    </div>
-
-    <div class="sku-card">
-      <span class="sku-tag">Snacks</span>
-      <p class="sku-title">Pakkavada</p>
-      <p class="sku-note">Kerala-origin rice flour snack, low competition in EU market</p>
-    </div>
-
-    <div class="sku-card">
-      <span class="sku-tag">Pickles</span>
-      <p class="sku-title">Kerala Mango Pickle</p>
-      <p class="sku-note">South Indian style, distinct from North Indian variants in range</p>
-    </div>
-
-    <div class="sku-card">
-      <span class="sku-tag">Pickles</span>
-      <p class="sku-title">Kerala Lime Pickle</p>
-      <p class="sku-note">Complements rice-based meal occasions, consistent volume</p>
-    </div>
-
   </div>
-  <div class="section-spacer"></div>
+
+  <hr>
 
   <!-- SECTION 5: NEXT STEP -->
-  <span class="section-label">Next Step</span>
-  <p class="prose">
-    If this looks like a fit for GFT's range across any of your markets, we are happy to share the full catalogue for the SKUs most relevant to your buyers. Just reply to this email and we will take it from there.
-  </p>
+  <div class="section">
+    <span class="section-label">Next Step</span>
+    <p>If this looks like a fit for GFT's range across any of your markets, we are happy to share the full catalogue for the SKUs most relevant to your buyers. Just reply to this email and we will take it from there.</p>
+  </div>
 
   <!-- FOOTER -->
   <div class="footer">
-    <div class="tagline">Minzelis, South Indian Food, European Standards</div>
-    <div class="meta">Gramarhein Food Tech LLP &nbsp;|&nbsp; <a href="https://minzelis.com" target="_blank">minzelis.com</a> &nbsp;|&nbsp; <a href="mailto:aslam@minzelis.com">aslam@minzelis.com</a></div>
+    <div class="footer-brand">Minzelis — South Indian Food, European Standards</div>
+    <div class="footer-details">Gramarhein Food Tech LLP &nbsp;|&nbsp; <a href="https://minzelis.com" target="_blank">minzelis.com</a> &nbsp;|&nbsp; <a href="mailto:aslam@minzelis.com">aslam@minzelis.com</a></div>
   </div>
 
 </div>
