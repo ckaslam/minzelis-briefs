@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Minzelis — Pipeline Dashboard</title>
+<style>
+  :root {
+    --cream: #FBF3E7;
+    --card: #FFFFFF;
+    --ink: #2B2420;
+    --ink-soft: #6B5E4F;
+    --border: #ECE0CC;
+    --green: #008929;
+    --green-soft: #E4F1E6;
+    --lime: #B4E330;
+    --amber: #D97B29;
+    --amber-soft: #FBEBD9;
+    --cold: #A79A88;
+    --cold-soft: #F1EADF;
+    --shadow: 0 1px 2px rgba(43,36,32,0.06), 0 8px 24px rgba(43,36,32,0.05);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Inter, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  header.top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 36px; flex-wrap: wrap; gap: 16px;
+  }
+  header.top .brand { display: flex; align-items: center; gap: 14px; }
+  header.top img { height: 34px; width: auto; }
+  header.top .title { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  header.top .sub { font-size: 22px; font-weight: 600; margin-top: 2px; }
+  .meta { font-size: 12px; color: var(--ink-soft); text-align: right; }
+  .meta .dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--green); margin-right:6px; }
+
+  section { margin-bottom: 44px; }
+  h2 {
+    font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 600; margin: 0 0 14px;
+  }
+
+  .stage-strip {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px;
+  }
+  .stage-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 12px; text-align: center; box-shadow: var(--shadow);
+  }
+  .stage-card .n { font-size: 26px; font-weight: 700; color: var(--green); line-height: 1; }
+  .stage-card .label { font-size: 11px; color: var(--ink-soft); margin-top: 6px; line-height: 1.3; }
+
+  .layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .stage-strip { grid-template-columns: repeat(4,1fr); } }
+
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+  thead th {
+    text-align: left; font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--ink-soft); padding: 12px 14px; border-bottom: 1px solid var(--border);
+  }
+  tbody td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr { cursor: pointer; transition: background .1s; }
+  tbody tr:hover { background: var(--green-soft); }
+  tbody tr.selected { background: var(--amber-soft); }
+  .company-name { font-weight: 600; }
+  .company-sub { font-size: 11.5px; color: var(--ink-soft); }
+
+  .tag { display: inline-block; padding: 3px 9px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: .02em; }
+  .tag.hot { background: var(--amber-soft); color: var(--amber); }
+  .tag.warm { background: var(--green-soft); color: var(--green); }
+  .tag.cold { background: #F1EADF; color: var(--cold); }
+  .score-bar { width: 60px; height: 5px; border-radius: 3px; background: var(--border); overflow: hidden; margin-top: 4px; }
+  .score-bar > i { display: block; height: 100%; background: var(--green); }
+
+  .panel {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; box-shadow: var(--shadow); position: sticky; top: 20px;
+  }
+  .panel h3 { margin: 0 0 4px; font-size: 17px; }
+  .panel .website { font-size: 12px; color: var(--green); margin-bottom: 14px; word-break: break-all; }
+  .panel .field { margin-bottom: 14px; }
+  .panel .field .k { font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 3px; }
+  .panel .field .v { font-size: 13.5px; line-height: 1.5; white-space: pre-wrap; }
+  .panel .empty { color: var(--ink-soft); font-size: 13px; padding: 20px 0; text-align: center; }
+
+  .feed-item { padding: 12px 14px; border-bottom: 1px solid var(--border); background: var(--card); }
+  .feed-item:first-child { border-radius: 12px 12px 0 0; }
+  .feed-item:last-child { border-bottom: none; border-radius: 0 0 12px 12px; }
+  .feed-wrap { border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+  .feed-item .row1 { display:flex; justify-content:space-between; gap:10px; font-size: 13px; font-weight:600; }
+  .feed-item .row2 { font-size: 12.5px; color: var(--ink-soft); margin-top: 3px; }
+  .feed-item .when { font-size: 11px; color: var(--ink-soft); white-space:nowrap; }
+  .pol-positive { color: var(--green); }
+  .pol-negative { color: var(--amber); }
+
+  .loading, .error { padding: 40px; text-align: center; color: var(--ink-soft); font-size: 13px; }
+  .error { color: var(--amber); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <img src="https://minzelis.com/wp-content/uploads/2025/07/minzelis-logo-scaled.png" alt="Minzelis" />
+      <div>
+        <div class="title">AI SDR Pipeline</div>
+        <div class="sub">Live Overview</div>
+      </div>
+    </div>
+    <div class="meta"><span class="dot"></span><span id="asOf">loading…</span></div>
+  </header>
+
+  <section>
+    <h2>Pipeline Health</h2>
+    <div class="stage-strip" id="stageStrip"></div>
+  </section>
+
+  <section class="layout">
+    <div>
+      <h2>Hot Queue</h2>
+      <table>
+        <thead>
+          <tr><th>Company</th><th>Stage</th><th>Priority</th><th>Intent</th><th>Updated</th></tr>
+        </thead>
+        <tbody id="queueBody"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="panel" id="detailPanel">
+      <div class="empty">Select a company to see the full breakdown.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Recent Signals</h2>
+    <div class="feed-wrap" id="feed"><div class="feed-item loading">Loading…</div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const SUPABASE_URL = "https://zdutyqadmotlsxlzsxgs.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkdXR5cWFkbW90bHN4bHpzeGdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMjcyMzMsImV4cCI6MjA5ODcwMzIzM30.K6aaED5rzc3_AFkxNR0qoUGZo8dU4_veGzk50A6n9NI";
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const STAGE_ORDER = ["Intent","Discovery","Lead Qualify","Commercial Qualify","Deep Research","Asset Brief","Outreach Draft"];
+
+  function tierOf(score) {
+    if (score == null) return { label: "COLD", cls: "cold" };
+    if (score >= 15) return { label: "HOT", cls: "hot" };
+    if (score >= 6) return { label: "WARM", cls: "warm" };
+    return { label: "COLD", cls: "cold" };
+  }
+
+  function timeAgo(iso) {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    const diffH = Math.round((Date.now() - d.getTime()) / 3600000);
+    if (diffH < 1) return "just now";
+    if (diffH < 24) return diffH + "h ago";
+    const diffD = Math.round(diffH / 24);
+    return diffD + "d ago";
+  }
+
+  function esc(s) {
+    if (s == null) return "";
+    return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  }
+
+  async function loadStages() {
+    const { data, error } = await sb.from("dashboard_pipeline_health").select("*");
+    const strip = document.getElementById("stageStrip");
+    if (error) { strip.innerHTML = `<div class="error">${esc(error.message)}</div>`; return; }
+    const counts = Object.fromEntries((data || []).map(r => [r.stage, r.company_count]));
+    strip.innerHTML = STAGE_ORDER.map(name => `
+      <div class="stage-card">
+        <div class="n">${counts[name] || 0}</div>
+        <div class="label">${esc(name)}</div>
+      </div>
+    `).join("");
+  }
+
+  let companies = [];
+
+  async function loadQueue() {
+    const { data, error } = await sb.from("dashboard_companies")
+      .select("*")
+      .neq("status", "rejected")
+      .order("intent_score", { ascending: false, nullsFirst: false })
+      .limit(50);
+    const body = document.getElementById("queueBody");
+    if (error) { body.innerHTML = `<tr><td colspan="5" class="error">${esc(error.message)}</td></tr>`; return; }
+    companies = data || [];
+    if (!companies.length) { body.innerHTML = `<tr><td colspan="5" class="loading">No companies yet.</td></tr>`; return; }
+    body.innerHTML = companies.map((c, i) => {
+      const tier = tierOf(c.intent_score);
+      const pct = Math.max(4, Math.min(100, Math.round((c.intent_score || 0) * 4)));
+      return `
+        <tr data-i="${i}">
+          <td>
+            <div class="company-name">${esc(c.company_name)}</div>
+            <div class="company-sub">${esc(c.registered_country || "")}</div>
+          </td>
+          <td>${esc(c.stage)}</td>
+          <td>${esc(c.priority || "—")}</td>
+          <td>
+            <span class="tag ${tier.cls}">${tier.label}</span>
+            <div class="score-bar"><i style="width:${pct}%"></i></div>
+          </td>
+          <td>${timeAgo(c.updated_at)}</td>
+        </tr>`;
+    }).join("");
+    body.querySelectorAll("tr[data-i]").forEach(tr => {
+      tr.addEventListener("click", () => selectCompany(parseInt(tr.dataset.i, 10), tr));
+    });
+  }
+
+  function selectCompany(i, tr) {
+    document.querySelectorAll("#queueBody tr").forEach(r => r.classList.remove("selected"));
+    tr.classList.add("selected");
+    const c = companies[i];
+    const panel = document.getElementById("detailPanel");
+    const field = (label, val) => val ? `
+      <div class="field"><div class="k">${esc(label)}</div><div class="v">${esc(val)}</div></div>` : "";
+    panel.innerHTML = `
+      <h3>${esc(c.company_name)}</h3>
+      ${c.website ? `<div class="website">${esc(c.website)}</div>` : ""}
+      ${field("Score", c.score)}
+      ${field("Enrichment Priority Score", c.enrichment_priority_score)}
+      ${field("Intent Signals", c.intent_signals)}
+      ${field("Why Fit", c.why_fit)}
+      ${field("Current Brand Portfolio", c.current_brand_portfolio)}
+      ${field("Customer Base", c.customer_base)}
+      ${field("Distributes To", (c.distributes_to_countries || []).join(", "))}
+    `;
+  }
+
+  async function loadFeed() {
+    const { data, error } = await sb.from("dashboard_recent_events").select("*").limit(30);
+    const feed = document.getElementById("feed");
+    if (error) { feed.innerHTML = `<div class="feed-item error">${esc(error.message)}</div>`; return; }
+    if (!data || !data.length) { feed.innerHTML = `<div class="feed-item loading">No signals observed yet.</div>`; return; }
+    feed.innerHTML = data.map(e => `
+      <div class="feed-item">
+        <div class="row1">
+          <span class="${e.polarity === 'negative' ? 'pol-negative' : 'pol-positive'}">${esc(e.company_name)} — ${esc(e.signal_name || e.event_type)}</span>
+          <span class="when">${timeAgo(e.observed_at)}</span>
+        </div>
+        <div class="row2">${esc(e.summary || "")}</div>
+      </div>
+    `).join("");
+  }
+
+  async function refresh() {
+    document.getElementById("asOf").textContent = "updated " + new Date().toLocaleTimeString();
+    await Promise.all([loadStages(), loadQueue(), loadFeed()]);
+  }
+
+  refresh();
+  setInterval(refresh, 60000);
+</script>
+</body>
+</html>
