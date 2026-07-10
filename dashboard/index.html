@@ -45,8 +45,13 @@
     background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
     box-shadow: var(--shadow); padding: 40px 34px; width: 100%; max-width: 360px; text-align: center;
   }
-  .gate-card .wordmark { font-size: 20px; font-weight: 700; letter-spacing: .02em; margin-bottom: 6px; }
-  .gate-card .wordmark b { color: var(--green); font-weight: 700; }
+  .logo-chip {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #ffffff; border-radius: 9px; padding: 7px 12px;
+  }
+  .logo-chip img { height: 22px; display: block; }
+  .gate-card .logo-chip { margin-bottom: 10px; }
+  .gate-card .logo-chip img { height: 26px; }
   .gate-card .micro { margin-bottom: 28px; display: block; }
   .gate-card input {
     width: 100%; padding: 12px 14px; border: 1px solid var(--border-2); border-radius: 10px;
@@ -69,9 +74,7 @@
     display: flex; flex-direction: column; padding: 20px 12px; position: sticky; top: 0; height: 100vh;
   }
   .side-brand { padding: 4px 10px 18px; }
-  .side-brand .wordmark { font-size: 17px; font-weight: 700; }
-  .side-brand .wordmark b { color: var(--green); }
-  .side-brand .micro { margin-top: 2px; display: block; }
+  .side-brand .micro { margin-top: 8px; display: block; }
 
   nav { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; }
   nav a {
@@ -172,10 +175,14 @@
   .panel .empty { color: var(--ink-3); font-size: 13px; padding: 26px 0; text-align: center; }
 
   /* signals feed */
-  .feed-item { padding: 13px 16px; border-bottom: 1px solid var(--border); }
+  .feed-item { display: block; padding: 13px 16px; border-bottom: 1px solid var(--border); color: inherit; text-decoration: none; }
   .feed-item:last-child { border-bottom: none; }
+  .feed-item.link { cursor: pointer; transition: background .1s; }
+  .feed-item.link:hover { background: var(--surface-2); }
   .feed-item .row1 { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 600; }
   .feed-item .row2 { font-size: 12.5px; color: var(--ink-2); margin-top: 3px; line-height: 1.5; }
+  .feed-item .row3 { font-size: 11px; color: var(--ink-3); margin-top: 5px; }
+  .feed-item.link:hover .row3 { color: var(--green); }
   .feed-item .when { font-size: 11px; color: var(--ink-3); white-space: nowrap; }
   .pol-positive { color: var(--green); }
   .pol-negative { color: var(--gold); }
@@ -226,7 +233,7 @@
 
 <div id="authGate">
   <div class="gate-card">
-    <div class="wordmark">Minzelis<b>.</b></div>
+    <span class="logo-chip"><img src="https://minzelis.com/wp-content/uploads/2025/07/minzelis-logo-scaled.png" alt="Minzelis" /></span>
     <span class="micro">AI SDR Platform</span>
     <form id="emailForm">
       <input type="email" id="emailInput" placeholder="you@minzelis.com" autocomplete="email" required />
@@ -239,7 +246,7 @@
 <div id="app" class="hidden">
   <aside>
     <div class="side-brand">
-      <div class="wordmark">Minzelis<b>.</b></div>
+      <span class="logo-chip"><img src="https://minzelis.com/wp-content/uploads/2025/07/minzelis-logo-scaled.png" alt="Minzelis" /></span>
       <span class="micro">AI SDR Platform</span>
     </div>
     <nav id="nav">
@@ -515,14 +522,19 @@
   }
 
   function feedItemHtml(e) {
-    return `
-      <div class="feed-item">
+    const srcRow = e.source_url
+      ? `<div class="row3">${esc(e.source || "open source")} ↗</div>`
+      : (e.source ? `<div class="row3">${esc(e.source)}</div>` : "");
+    const inner = `
         <div class="row1">
           <span class="${e.polarity === 'negative' ? 'pol-negative' : 'pol-positive'}">${esc(e.company_name)} — ${esc(e.signal_name || e.event_type)}</span>
           <span class="when">${timeAgo(e.observed_at)}</span>
         </div>
         <div class="row2">${esc(e.summary || "")}</div>
-      </div>`;
+        ${srcRow}`;
+    return e.source_url
+      ? `<a class="feed-item link" href="${esc(e.source_url)}" target="_blank" rel="noopener noreferrer">${inner}</a>`
+      : `<div class="feed-item">${inner}</div>`;
   }
 
   async function loadFeed() {
