@@ -150,6 +150,26 @@
   .switch input:checked + .slider::before { transform: translateX(18px); }
   .switch input:disabled + .slider { opacity: .5; cursor: default; }
   .focus-note { font-size: 12px; color: var(--ink-soft); margin-top: 10px; }
+
+  /* Access (share) panel */
+  .access-controls { display: flex; align-items: center; gap: 10px; }
+  .access-controls select, .access-add select {
+    padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 12.5px; font-family: inherit; background: var(--cream); color: var(--ink);
+  }
+  .access-controls .remove-btn {
+    background: none; border: none; color: var(--amber); font-size: 12px;
+    cursor: pointer; text-decoration: underline; font-family: inherit; padding: 0;
+  }
+  .access-add { display: flex; gap: 8px; margin-top: 12px; }
+  .access-add input {
+    flex: 1; padding: 8px 11px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 13px; font-family: inherit; background: var(--card);
+  }
+  .access-add button {
+    padding: 8px 14px; border: none; border-radius: 8px; background: var(--green);
+    color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
 </style>
 </head>
 <body>
@@ -208,6 +228,21 @@
     <h2>Recent Signals</h2>
     <div class="feed-wrap" id="feed"><div class="feed-item loading">Loading…</div></div>
   </section>
+
+  <section id="accessSection">
+    <h2>Access</h2>
+    <div class="focus-list" id="accessList"><div class="feed-item loading">Loading…</div></div>
+    <div class="focus-note">Who can open this dashboard. Viewers can look, editors can also flip the country switches, admins can also manage this list.</div>
+    <form id="accessAdd" class="access-add hidden">
+      <input type="email" id="accessEmail" placeholder="name@company.com" required />
+      <select id="accessRoleSel">
+        <option value="viewer">Viewer</option>
+        <option value="editor">Editor</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button type="submit">Add person</button>
+    </form>
+  </section>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -254,9 +289,15 @@
     await sb.auth.signOut();
   });
 
+  let myRole = null;
+  let myEmail = null;
+
   async function showApp() {
-    const { data, error } = await sb.rpc("is_dashboard_admin");
-    if (error || data !== true) {
+    const { data, error } = await sb.rpc("dashboard_role");
+    myRole = data || null;
+    const { data: { session } } = await sb.auth.getSession();
+    myEmail = session && session.user ? session.user.email : null;
+    if (error || !myRole) {
       await sb.auth.signOut();
       authGate.classList.remove("hidden");
       appWrap.classList.add("hidden");
@@ -398,7 +439,7 @@
       <div class="focus-row">
         <div><span class="name">${esc(c.country)}</span><span class="status-tag">${esc(c.status)}</span></div>
         <label class="switch">
-          <input type="checkbox" data-country="${esc(c.country)}" ${c.focus ? "checked" : ""} />
+          <input type="checkbox" data-country="${esc(c.country)}" ${c.focus ? "checked" : ""} ${myRole === "viewer" ? "disabled" : ""} />
           <span class="slider"></span>
         </label>
       </div>
@@ -415,9 +456,62 @@
     });
   }
 
+  // ---------- Access (share) panel ----------
+  const ROLE_LABELS = { viewer: "Viewer", editor: "Editor", admin: "Admin" };
+
+  async function loadAccess() {
+    const list = document.getElementById("accessList");
+    document.getElementById("accessAdd").classList.toggle("hidden", myRole !== "admin");
+    const { data, error } = await sb.from("dashboard_admins").select("email,role").order("email");
+    if (error) { list.innerHTML = `<div class="feed-item error">${esc(error.message)}</div>`; return; }
+    list.innerHTML = (data || []).map(a => `
+      <div class="focus-row">
+        <div><span class="name">${esc(a.email)}</span>${a.email === myEmail ? '<span class="status-tag">you</span>' : ""}</div>
+        <div class="access-controls">
+          ${myRole === "admin" ? `
+            <select class="role-select" data-email="${esc(a.email)}">
+              ${["viewer","editor","admin"].map(r => `<option value="${r}" ${a.role === r ? "selected" : ""}>${ROLE_LABELS[r]}</option>`).join("")}
+            </select>
+            ${a.email !== myEmail ? `<button type="button" class="remove-btn" data-email="${esc(a.email)}">remove</button>` : ""}`
+          : `<span class="status-tag">${esc(ROLE_LABELS[a.role] || a.role)}</span>`}
+        </div>
+      </div>
+    `).join("");
+    list.querySelectorAll(".role-select").forEach(sel => {
+      sel.addEventListener("change", async () => {
+        if (sel.dataset.email === myEmail && sel.value !== "admin" &&
+            !confirm("You are changing your OWN role — you will lose the ability to manage this list. Continue?")) {
+          loadAccess(); return;
+        }
+        const { error } = await sb.from("dashboard_admins").update({ role: sel.value }).eq("email", sel.dataset.email);
+        if (error) alert("Couldn't save: " + error.message);
+        loadAccess();
+      });
+    });
+    list.querySelectorAll(".remove-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("Remove dashboard access for " + btn.dataset.email + "?")) return;
+        const { error } = await sb.from("dashboard_admins").delete().eq("email", btn.dataset.email);
+        if (error) alert("Couldn't remove: " + error.message);
+        loadAccess();
+      });
+    });
+  }
+
+  document.getElementById("accessAdd").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("accessEmail").value.trim().toLowerCase();
+    const role = document.getElementById("accessRoleSel").value;
+    if (!email) return;
+    const { error } = await sb.from("dashboard_admins").insert({ email, role });
+    if (error) { alert("Couldn't add: " + error.message); return; }
+    document.getElementById("accessEmail").value = "";
+    loadAccess();
+  });
+
   async function refresh() {
     document.getElementById("asOf").textContent = "updated " + new Date().toLocaleTimeString();
-    await Promise.all([loadStages(), loadQueue(), loadFeed(), loadFocus()]);
+    await Promise.all([loadStages(), loadQueue(), loadFeed(), loadFocus(), loadAccess()]);
   }
 
   setInterval(() => { if (!appWrap.classList.contains("hidden")) refresh(); }, 60000);
