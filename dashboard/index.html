@@ -3,181 +3,231 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Minzelis — Pipeline Dashboard</title>
+<title>Minzelis — AI SDR</title>
 <style>
   :root {
-    --cream: #FBF3E7;
-    --card: #FFFFFF;
-    --ink: #2B2420;
-    --ink-soft: #6B5E4F;
-    --border: #ECE0CC;
-    --green: #008929;
-    --green-soft: #E4F1E6;
-    --lime: #B4E330;
-    --amber: #D97B29;
-    --amber-soft: #FBEBD9;
-    --cold: #A79A88;
-    --cold-soft: #F1EADF;
-    --shadow: 0 1px 2px rgba(43,36,32,0.06), 0 8px 24px rgba(43,36,32,0.05);
+    /* dark surfaces + ink (palette roles) */
+    --page:        #0d0d0d;
+    --surface:     #16181a;
+    --surface-2:   #1c1f22;
+    --border:      rgba(255,255,255,0.08);
+    --border-2:    rgba(255,255,255,0.14);
+    --ink:         #f4f3ef;
+    --ink-2:       #b9b8ae;
+    --ink-3:       #898781;
+    /* brand + status (labels always accompany color) */
+    --green:       #0ca30c;
+    --green-soft:  rgba(12,163,12,0.12);
+    --gold:        #fab219;
+    --gold-soft:   rgba(250,178,25,0.10);
+    --cold:        #898781;
+    --cold-soft:   rgba(137,135,129,0.14);
+    --red:         #d03b3b;
+    --shadow:      0 1px 2px rgba(0,0,0,0.4), 0 12px 32px rgba(0,0,0,0.35);
   }
   * { box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
-    margin: 0;
-    background: var(--cream);
-    color: var(--ink);
-    font-family: -apple-system, "Segoe UI", Inter, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
+    margin: 0; background: var(--page); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Inter, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; font-size: 14px;
   }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 24px 80px; }
-
-  header.top {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 36px; flex-wrap: wrap; gap: 16px;
-  }
-  header.top .brand { display: flex; align-items: center; gap: 14px; }
-  header.top img { height: 34px; width: auto; }
-  header.top .title { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
-  header.top .sub { font-size: 22px; font-weight: 600; margin-top: 2px; }
-  .meta { font-size: 12px; color: var(--ink-soft); text-align: right; display: flex; align-items: center; gap: 14px; }
-  .meta .dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--green); margin-right:6px; }
-  .meta .signout { color: var(--ink-soft); text-decoration: underline; cursor: pointer; background: none; border: none; font-size: 12px; font-family: inherit; padding: 0; }
-
-  section { margin-bottom: 44px; }
-  h2 {
-    font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
-    color: var(--ink-soft); font-weight: 600; margin: 0 0 14px;
-  }
-
-  .stage-strip {
-    display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px;
-  }
-  .stage-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 14px 12px; text-align: center; box-shadow: var(--shadow);
-  }
-  .stage-card .n { font-size: 26px; font-weight: 700; color: var(--green); line-height: 1; }
-  .stage-card .label { font-size: 11px; color: var(--ink-soft); margin-top: 6px; line-height: 1.3; }
-
-  .layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; align-items: start; }
-  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .stage-strip { grid-template-columns: repeat(4,1fr); } }
-
-  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
-  thead th {
-    text-align: left; font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
-    color: var(--ink-soft); padding: 12px 14px; border-bottom: 1px solid var(--border);
-  }
-  tbody td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 13.5px; }
-  tbody tr:last-child td { border-bottom: none; }
-  tbody tr { cursor: pointer; transition: background .1s; }
-  tbody tr:hover { background: var(--green-soft); }
-  tbody tr.selected { background: var(--amber-soft); }
-  .company-name { font-weight: 600; }
-  .company-sub { font-size: 11.5px; color: var(--ink-soft); }
-
-  .tag { display: inline-block; padding: 3px 9px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: .02em; }
-  .tag.hot { background: var(--amber-soft); color: var(--amber); }
-  .tag.warm { background: var(--green-soft); color: var(--green); }
-  .tag.cold { background: #F1EADF; color: var(--cold); }
-  .score-bar { width: 60px; height: 5px; border-radius: 3px; background: var(--border); overflow: hidden; margin-top: 4px; }
-  .score-bar > i { display: block; height: 100%; background: var(--green); }
-
-  .panel {
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 20px; box-shadow: var(--shadow); position: sticky; top: 20px;
-  }
-  .panel h3 { margin: 0 0 4px; font-size: 17px; }
-  .panel .website { font-size: 12px; color: var(--green); margin-bottom: 14px; word-break: break-all; }
-  .panel .field { margin-bottom: 14px; }
-  .panel .field .k { font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 3px; }
-  .panel .field .v { font-size: 13.5px; line-height: 1.5; white-space: pre-wrap; }
-  .panel .empty { color: var(--ink-soft); font-size: 13px; padding: 20px 0; text-align: center; }
-
-  .feed-item { padding: 12px 14px; border-bottom: 1px solid var(--border); background: var(--card); }
-  .feed-item:first-child { border-radius: 12px 12px 0 0; }
-  .feed-item:last-child { border-bottom: none; border-radius: 0 0 12px 12px; }
-  .feed-wrap { border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
-  .feed-item .row1 { display:flex; justify-content:space-between; gap:10px; font-size: 13px; font-weight:600; }
-  .feed-item .row2 { font-size: 12.5px; color: var(--ink-soft); margin-top: 3px; }
-  .feed-item .when { font-size: 11px; color: var(--ink-soft); white-space:nowrap; }
-  .pol-positive { color: var(--green); }
-  .pol-negative { color: var(--amber); }
-
-  .loading, .error { padding: 40px; text-align: center; color: var(--ink-soft); font-size: 13px; }
-  .error { color: var(--amber); }
-
-  /* Auth gate */
-  #authGate {
-    min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
-  }
-  .gate-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-    box-shadow: var(--shadow); padding: 32px; width: 100%; max-width: 340px; text-align: center;
-  }
-  .gate-card img { height: 30px; margin-bottom: 18px; }
-  .gate-card h1 { font-size: 15px; margin: 0 0 22px; color: var(--ink-soft); font-weight: 600; letter-spacing: .02em; }
-  .gate-card input {
-    width: 100%; padding: 11px 13px; border: 1px solid var(--border); border-radius: 8px;
-    font-size: 14px; margin-bottom: 10px; font-family: inherit; background: var(--cream);
-  }
-  .gate-card button {
-    width: 100%; padding: 11px 13px; border: none; border-radius: 8px; background: var(--green);
-    color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
-  }
-  .gate-card button:disabled { opacity: .55; cursor: default; }
-  .gate-card .note { font-size: 12px; color: var(--ink-soft); margin-top: 14px; line-height: 1.5; }
-  .gate-card .note.err { color: var(--amber); }
   .hidden { display: none !important; }
 
-  /* Country focus panel */
-  .focus-list { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
-  .focus-row {
+  .micro {
+    font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600;
+  }
+
+  /* ---------- Auth gate ---------- */
+  #authGate { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .gate-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    box-shadow: var(--shadow); padding: 40px 34px; width: 100%; max-width: 360px; text-align: center;
+  }
+  .gate-card .wordmark { font-size: 20px; font-weight: 700; letter-spacing: .02em; margin-bottom: 6px; }
+  .gate-card .wordmark b { color: var(--green); font-weight: 700; }
+  .gate-card .micro { margin-bottom: 28px; display: block; }
+  .gate-card input {
+    width: 100%; padding: 12px 14px; border: 1px solid var(--border-2); border-radius: 10px;
+    font-size: 14px; margin-bottom: 10px; font-family: inherit; background: var(--page); color: var(--ink);
+  }
+  .gate-card input::placeholder { color: var(--ink-3); }
+  .gate-card button {
+    width: 100%; padding: 12px 14px; border: none; border-radius: 10px; background: var(--green);
+    color: #06230a; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .gate-card button:disabled { opacity: .55; cursor: default; }
+  .gate-card .note { font-size: 12.5px; color: var(--ink-2); margin-top: 16px; line-height: 1.5; }
+  .gate-card .note.err { color: var(--gold); }
+
+  /* ---------- App shell ---------- */
+  #app { display: flex; min-height: 100vh; }
+
+  aside {
+    width: 224px; flex-shrink: 0; background: #101112; border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; padding: 20px 12px; position: sticky; top: 0; height: 100vh;
+  }
+  .side-brand { padding: 4px 10px 18px; }
+  .side-brand .wordmark { font-size: 17px; font-weight: 700; }
+  .side-brand .wordmark b { color: var(--green); }
+  .side-brand .micro { margin-top: 2px; display: block; }
+
+  nav { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; }
+  nav a {
+    display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 9px;
+    color: var(--ink-2); text-decoration: none; font-size: 13.5px; font-weight: 500; cursor: pointer;
+  }
+  nav a svg { width: 16px; height: 16px; flex-shrink: 0; opacity: .8; }
+  nav a:hover { background: var(--surface-2); color: var(--ink); }
+  nav a.active { background: var(--surface-2); color: var(--ink); box-shadow: inset 2px 0 0 var(--green); }
+
+  .side-foot { margin-top: auto; padding: 14px 10px 4px; border-top: 1px solid var(--border); }
+  .side-foot .email { font-size: 12px; color: var(--ink-2); word-break: break-all; }
+  .side-foot .role-chip {
+    display: inline-block; margin-top: 6px; padding: 2px 9px; border-radius: 100px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    background: var(--green-soft); color: var(--green); border: 1px solid rgba(12,163,12,.25);
+  }
+  .side-foot .signout {
+    display: block; margin-top: 12px; background: none; border: none; color: var(--ink-3);
+    font-size: 12px; cursor: pointer; text-decoration: underline; font-family: inherit; padding: 0;
+  }
+
+  main { flex: 1; min-width: 0; padding: 26px 32px 80px; max-width: 1240px; }
+  .topbar { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 26px; flex-wrap: wrap; gap: 10px; }
+  .topbar h1 { font-size: 20px; font-weight: 700; margin: 0; }
+  .topbar .meta { font-size: 12px; color: var(--ink-3); display: flex; align-items: center; gap: 8px; }
+  .topbar .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; }
+
+  section.view { display: none; }
+  section.view.active { display: block; }
+  .block { margin-bottom: 34px; }
+  .block > .micro { display: block; margin-bottom: 12px; }
+
+  /* stat tiles */
+  .tiles { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  @media (max-width: 1100px) { .tiles { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px)  { .tiles { grid-template-columns: repeat(2, 1fr); } }
+  .tile {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 18px; box-shadow: var(--shadow);
+  }
+  .tile .v { font-size: 30px; font-weight: 700; line-height: 1.1; }
+  .tile .v .unit { font-size: 13px; color: var(--ink-3); font-weight: 500; }
+  .tile .k { margin-top: 6px; }
+  .tile.accent .v { color: var(--green); }
+  .tile.gold .v { color: var(--gold); }
+
+  /* stage strip */
+  .stages { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+  @media (max-width: 1000px) { .stages { grid-template-columns: repeat(4, 1fr); } }
+  .stage {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 12px 12px 11px; box-shadow: var(--shadow);
+  }
+  .stage .idx { font-size: 10px; color: var(--ink-3); letter-spacing: .1em; }
+  .stage .n { font-size: 22px; font-weight: 700; margin: 4px 0 2px; font-variant-numeric: tabular-nums; }
+  .stage .label { font-size: 11px; color: var(--ink-2); line-height: 1.3; }
+
+  /* tables */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600; padding: 12px 16px; border-bottom: 1px solid var(--border);
+  }
+  tbody td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13.5px; vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr { cursor: pointer; transition: background .1s; }
+  tbody tr:hover { background: var(--surface-2); }
+  tbody tr.selected { background: var(--surface-2); box-shadow: inset 2px 0 0 var(--green); }
+  .co-name { font-weight: 600; }
+  .co-sub { font-size: 11.5px; color: var(--ink-3); margin-top: 1px; }
+  td.num { font-variant-numeric: tabular-nums; text-align: right; }
+
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 100px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .06em;
+  }
+  .tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .tag.hot  { background: var(--green-soft); color: var(--green); }
+  .tag.warm { background: var(--gold-soft);  color: var(--gold); }
+  .tag.cold { background: var(--cold-soft);  color: var(--cold); }
+
+  .score-wrap { display: flex; align-items: center; gap: 8px; }
+  .score-num { font-variant-numeric: tabular-nums; font-size: 12.5px; color: var(--ink-2); width: 30px; text-align: right; }
+  .score-bar { width: 72px; height: 4px; border-radius: 2px; background: var(--surface-2); overflow: hidden; }
+  .score-bar > i { display: block; height: 100%; border-radius: 2px; background: var(--green); }
+
+  /* pipeline layout with detail panel */
+  .split { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 1000px) { .split { grid-template-columns: 1fr; } }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); padding: 20px; position: sticky; top: 20px; }
+  .panel h3 { margin: 0 0 2px; font-size: 16px; }
+  .panel .website { font-size: 12px; color: var(--green); margin-bottom: 16px; word-break: break-all; }
+  .panel .field { margin-bottom: 14px; }
+  .panel .field .k { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 3px; font-weight: 600; }
+  .panel .field .v { font-size: 13px; line-height: 1.55; color: var(--ink-2); white-space: pre-wrap; }
+  .panel .empty { color: var(--ink-3); font-size: 13px; padding: 26px 0; text-align: center; }
+
+  /* signals feed */
+  .feed-item { padding: 13px 16px; border-bottom: 1px solid var(--border); }
+  .feed-item:last-child { border-bottom: none; }
+  .feed-item .row1 { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 600; }
+  .feed-item .row2 { font-size: 12.5px; color: var(--ink-2); margin-top: 3px; line-height: 1.5; }
+  .feed-item .when { font-size: 11px; color: var(--ink-3); white-space: nowrap; }
+  .pol-positive { color: var(--green); }
+  .pol-negative { color: var(--gold); }
+
+  /* countries + access rows */
+  .row-list .row {
     display: flex; align-items: center; justify-content: space-between;
     padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13.5px;
   }
-  .focus-row:last-child { border-bottom: none; }
-  .focus-row .name { font-weight: 600; }
-  .focus-row .status-tag { font-size: 10.5px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .04em; margin-left: 8px; }
-  .switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
-  .switch input { opacity: 0; width: 0; height: 0; }
-  .switch .slider {
-    position: absolute; inset: 0; background: var(--border); border-radius: 22px; cursor: pointer; transition: background .15s;
-  }
-  .switch .slider::before {
-    content: ""; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px;
-    background: #fff; border-radius: 50%; transition: transform .15s; box-shadow: 0 1px 2px rgba(0,0,0,.2);
-  }
-  .switch input:checked + .slider { background: var(--green); }
-  .switch input:checked + .slider::before { transform: translateX(18px); }
-  .switch input:disabled + .slider { opacity: .5; cursor: default; }
-  .focus-note { font-size: 12px; color: var(--ink-soft); margin-top: 10px; }
+  .row-list .row:last-child { border-bottom: none; }
+  .row-list .name { font-weight: 600; }
+  .row-list .status-tag { font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .08em; margin-left: 8px; }
+  .note { font-size: 12px; color: var(--ink-3); margin-top: 10px; line-height: 1.5; }
 
-  /* Access (share) panel */
-  .access-controls { display: flex; align-items: center; gap: 10px; }
-  .access-controls select, .access-add select {
-    padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px;
-    font-size: 12.5px; font-family: inherit; background: var(--cream); color: var(--ink);
+  .switch { position: relative; width: 38px; height: 21px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch .slider { position: absolute; inset: 0; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 22px; cursor: pointer; transition: background .15s; }
+  .switch .slider::before {
+    content: ""; position: absolute; width: 15px; height: 15px; left: 2px; top: 2px;
+    background: var(--ink-2); border-radius: 50%; transition: transform .15s, background .15s;
   }
-  .access-controls .remove-btn {
-    background: none; border: none; color: var(--amber); font-size: 12px;
-    cursor: pointer; text-decoration: underline; font-family: inherit; padding: 0;
+  .switch input:checked + .slider { background: var(--green); border-color: var(--green); }
+  .switch input:checked + .slider::before { transform: translateX(17px); background: #06230a; }
+  .switch input:disabled + .slider { opacity: .45; cursor: default; }
+
+  .access-controls { display: flex; align-items: center; gap: 12px; }
+  select {
+    padding: 6px 9px; border: 1px solid var(--border-2); border-radius: 8px;
+    font-size: 12.5px; font-family: inherit; background: var(--page); color: var(--ink);
   }
-  .access-add { display: flex; gap: 8px; margin-top: 12px; }
+  .remove-btn { background: none; border: none; color: var(--gold); font-size: 12px; cursor: pointer; text-decoration: underline; font-family: inherit; padding: 0; }
+  .access-add { display: flex; gap: 8px; margin-top: 14px; }
   .access-add input {
-    flex: 1; padding: 8px 11px; border: 1px solid var(--border); border-radius: 8px;
-    font-size: 13px; font-family: inherit; background: var(--card);
+    flex: 1; padding: 9px 12px; border: 1px solid var(--border-2); border-radius: 9px;
+    font-size: 13px; font-family: inherit; background: var(--surface); color: var(--ink);
   }
+  .access-add input::placeholder { color: var(--ink-3); }
   .access-add button {
-    padding: 8px 14px; border: none; border-radius: 8px; background: var(--green);
-    color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+    padding: 9px 16px; border: none; border-radius: 9px; background: var(--green);
+    color: #06230a; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
   }
+
+  .loading, .error { padding: 36px; text-align: center; color: var(--ink-3); font-size: 13px; }
+  .error { color: var(--gold); }
 </style>
 </head>
 <body>
 
 <div id="authGate">
   <div class="gate-card">
-    <img src="https://minzelis.com/wp-content/uploads/2025/07/minzelis-logo-scaled.png" alt="Minzelis" />
-    <h1>AI SDR Pipeline — sign in</h1>
+    <div class="wordmark">Minzelis<b>.</b></div>
+    <span class="micro">AI SDR Platform</span>
     <form id="emailForm">
       <input type="email" id="emailInput" placeholder="you@minzelis.com" autocomplete="email" required />
       <button type="submit" id="emailBtn">Send sign-in link</button>
@@ -186,63 +236,91 @@
   </div>
 </div>
 
-<div class="wrap hidden" id="appWrap">
-  <header class="top">
-    <div class="brand">
-      <img src="https://minzelis.com/wp-content/uploads/2025/07/minzelis-logo-scaled.png" alt="Minzelis" />
-      <div>
-        <div class="title">AI SDR Pipeline</div>
-        <div class="sub">Live Overview</div>
+<div id="app" class="hidden">
+  <aside>
+    <div class="side-brand">
+      <div class="wordmark">Minzelis<b>.</b></div>
+      <span class="micro">AI SDR Platform</span>
+    </div>
+    <nav id="nav">
+      <a data-view="overview" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Overview</a>
+      <a data-view="pipeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Pipeline</a>
+      <a data-view="signals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Signals</a>
+      <a data-view="countries"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 4 5.7 4 9s-1.5 6.4-4 9c-2.5-2.6-4-5.7-4-9s1.5-6.4 4-9z"/></svg>Countries</a>
+      <a data-view="access"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.2 3.4-5 6.5-5s5.7 1.8 6.5 5"/><circle cx="17.5" cy="9.5" r="2.5"/><path d="M15.5 15.2c2.8.2 5 1.7 5.8 4.3"/></svg>Access</a>
+    </nav>
+    <div class="side-foot">
+      <div class="email" id="footEmail"></div>
+      <span class="role-chip" id="footRole"></span>
+      <button class="signout" id="signOutBtn">sign out</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <h1 id="viewTitle">Overview</h1>
+      <div class="meta"><span class="dot"></span><span id="asOf">loading…</span></div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section class="view active" data-view="overview">
+      <div class="block">
+        <div class="tiles" id="tiles"><div class="loading">Loading…</div></div>
       </div>
-    </div>
-    <div class="meta"><span class="dot"></span><span id="asOf">loading…</span><button class="signout" id="signOutBtn">sign out</button></div>
-  </header>
+      <div class="block">
+        <span class="micro">Pipeline stages · live</span>
+        <div class="stages" id="stageStrip"></div>
+      </div>
+      <div class="block">
+        <span class="micro">Contact-ready queue · top of list</span>
+        <div class="card"><table>
+          <thead><tr><th>Company</th><th>Stage</th><th>Intent</th><th>Updated</th></tr></thead>
+          <tbody id="previewBody"><tr><td colspan="4" class="loading">Loading…</td></tr></tbody>
+        </table></div>
+      </div>
+      <div class="block">
+        <span class="micro">Latest signals</span>
+        <div class="card" id="previewFeed"><div class="loading">Loading…</div></div>
+      </div>
+    </section>
 
-  <section>
-    <h2>Pipeline Health</h2>
-    <div class="stage-strip" id="stageStrip"></div>
-  </section>
+    <!-- PIPELINE -->
+    <section class="view" data-view="pipeline">
+      <div class="split">
+        <div class="card"><table>
+          <thead><tr><th>Company</th><th>Stage</th><th>Priority</th><th>Intent</th><th>Updated</th></tr></thead>
+          <tbody id="queueBody"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody>
+        </table></div>
+        <div class="panel" id="detailPanel"><div class="empty">Select a company to see the full breakdown.</div></div>
+      </div>
+    </section>
 
-  <section class="layout">
-    <div>
-      <h2>Hot Queue</h2>
-      <table>
-        <thead>
-          <tr><th>Company</th><th>Stage</th><th>Priority</th><th>Intent</th><th>Updated</th></tr>
-        </thead>
-        <tbody id="queueBody"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody>
-      </table>
-    </div>
-    <div class="panel" id="detailPanel">
-      <div class="empty">Select a company to see the full breakdown.</div>
-    </div>
-  </section>
+    <!-- SIGNALS -->
+    <section class="view" data-view="signals">
+      <div class="card" id="feed"><div class="loading">Loading…</div></div>
+    </section>
 
-  <section>
-    <h2>Country Focus</h2>
-    <div class="focus-list" id="focusList"><div class="feed-item loading">Loading…</div></div>
-    <div class="focus-note">Only countries flagged here are covered by tomorrow's scheduled sweep. Toggling off doesn't change a country's lifecycle stage — it just pauses the daily sweep for it.</div>
-  </section>
+    <!-- COUNTRIES -->
+    <section class="view" data-view="countries">
+      <div class="card row-list" id="focusList"><div class="loading">Loading…</div></div>
+      <div class="note">Only countries switched on here are covered by tomorrow's 5:00 AM IST sweep. Switching one off pauses the daily sweep for it without removing the country from the system. Viewers can look; editors and admins can change switches.</div>
+    </section>
 
-  <section>
-    <h2>Recent Signals</h2>
-    <div class="feed-wrap" id="feed"><div class="feed-item loading">Loading…</div></div>
-  </section>
-
-  <section id="accessSection">
-    <h2>Access</h2>
-    <div class="focus-list" id="accessList"><div class="feed-item loading">Loading…</div></div>
-    <div class="focus-note">Who can open this dashboard. Viewers can look, editors can also flip the country switches, admins can also manage this list.</div>
-    <form id="accessAdd" class="access-add hidden">
-      <input type="email" id="accessEmail" placeholder="name@company.com" required />
-      <select id="accessRoleSel">
-        <option value="viewer">Viewer</option>
-        <option value="editor">Editor</option>
-        <option value="admin">Admin</option>
-      </select>
-      <button type="submit">Add person</button>
-    </form>
-  </section>
+    <!-- ACCESS -->
+    <section class="view" data-view="access">
+      <div class="card row-list" id="accessList"><div class="loading">Loading…</div></div>
+      <div class="note">Who can open this dashboard — shared like a document. <b>Viewer</b> can look, <b>Editor</b> can also flip country switches, <b>Admin</b> can also manage this list. Changes take effect immediately.</div>
+      <form id="accessAdd" class="access-add hidden">
+        <input type="email" id="accessEmail" placeholder="name@company.com" required />
+        <select id="accessRoleSel">
+          <option value="viewer">Viewer</option>
+          <option value="editor">Editor</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button type="submit">Add person</button>
+      </form>
+    </section>
+  </main>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -252,19 +330,37 @@
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const STAGE_ORDER = ["Intent","Discovery","Lead Qualify","Commercial Qualify","Deep Research","Asset Brief","Outreach Draft"];
+  const VIEW_TITLES = { overview: "Overview", pipeline: "Pipeline", signals: "Signals", countries: "Countries", access: "Access" };
+  const ROLE_LABELS = { viewer: "Viewer", editor: "Editor", admin: "Admin" };
 
   function esc(s) {
     if (s == null) return "";
     return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
   }
+  function tierOf(score) {
+    if (score == null) return { label: "COLD", cls: "cold" };
+    if (score >= 15) return { label: "HOT", cls: "hot" };
+    if (score >= 6) return { label: "WARM", cls: "warm" };
+    return { label: "COLD", cls: "cold" };
+  }
+  function timeAgo(iso) {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    const diffH = Math.round((Date.now() - d.getTime()) / 3600000);
+    if (diffH < 1) return "just now";
+    if (diffH < 24) return diffH + "h ago";
+    return Math.round(diffH / 24) + "d ago";
+  }
 
   // ---------- Auth gate ----------
   const authGate = document.getElementById("authGate");
-  const appWrap = document.getElementById("appWrap");
+  const app = document.getElementById("app");
   const emailForm = document.getElementById("emailForm");
   const emailInput = document.getElementById("emailInput");
   const emailBtn = document.getElementById("emailBtn");
   const gateNote = document.getElementById("gateNote");
+  let myRole = null;
+  let myEmail = null;
 
   function setNote(msg, isErr) {
     gateNote.textContent = msg || "";
@@ -285,12 +381,7 @@
     setNote("Link sent to " + email + " — open it on this device to sign in.");
   });
 
-  document.getElementById("signOutBtn").addEventListener("click", async () => {
-    await sb.auth.signOut();
-  });
-
-  let myRole = null;
-  let myEmail = null;
+  document.getElementById("signOutBtn").addEventListener("click", async () => { await sb.auth.signOut(); });
 
   async function showApp() {
     const { data, error } = await sb.rpc("dashboard_role");
@@ -300,46 +391,53 @@
     if (error || !myRole) {
       await sb.auth.signOut();
       authGate.classList.remove("hidden");
-      appWrap.classList.add("hidden");
+      app.classList.add("hidden");
       emailInput.disabled = false;
       emailBtn.disabled = false;
-      setNote("That email isn't on the access list. Ask Aslam to add it.", true);
+      setNote("That email isn't on the access list. Ask an admin to add it.", true);
       return;
     }
+    document.getElementById("footEmail").textContent = myEmail || "";
+    document.getElementById("footRole").textContent = ROLE_LABELS[myRole] || myRole;
     authGate.classList.add("hidden");
-    appWrap.classList.remove("hidden");
+    app.classList.remove("hidden");
     refresh();
   }
+  function showGate() { app.classList.add("hidden"); authGate.classList.remove("hidden"); }
 
-  function showGate() {
-    appWrap.classList.add("hidden");
-    authGate.classList.remove("hidden");
-  }
+  sb.auth.onAuthStateChange((event, session) => { if (session) showApp(); else showGate(); });
+  sb.auth.getSession().then(({ data: { session } }) => { if (session) showApp(); });
 
-  sb.auth.onAuthStateChange((event, session) => {
-    if (session) showApp(); else showGate();
+  // ---------- Navigation ----------
+  document.getElementById("nav").addEventListener("click", (e) => {
+    const a = e.target.closest("a[data-view]");
+    if (!a) return;
+    document.querySelectorAll("#nav a").forEach(n => n.classList.toggle("active", n === a));
+    document.querySelectorAll("section.view").forEach(s => s.classList.toggle("active", s.dataset.view === a.dataset.view));
+    document.getElementById("viewTitle").textContent = VIEW_TITLES[a.dataset.view];
   });
 
-  sb.auth.getSession().then(({ data: { session } }) => {
-    if (session) showApp();
-  });
+  // ---------- Data ----------
+  let companies = [];
 
-  // ---------- Dashboard data (unchanged logic, now behind auth) ----------
-  function tierOf(score) {
-    if (score == null) return { label: "COLD", cls: "cold" };
-    if (score >= 15) return { label: "HOT", cls: "hot" };
-    if (score >= 6) return { label: "WARM", cls: "warm" };
-    return { label: "COLD", cls: "cold" };
-  }
-
-  function timeAgo(iso) {
-    if (!iso) return "—";
-    const d = new Date(iso);
-    const diffH = Math.round((Date.now() - d.getTime()) / 3600000);
-    if (diffH < 1) return "just now";
-    if (diffH < 24) return diffH + "h ago";
-    const diffD = Math.round(diffH / 24);
-    return diffD + "d ago";
+  async function loadStats() {
+    const el = document.getElementById("tiles");
+    const [all, hot, ready, ctry, ev] = await Promise.all([
+      sb.from("dashboard_companies").select("id", { count: "exact", head: true }).neq("status", "rejected"),
+      sb.from("dashboard_companies").select("id", { count: "exact", head: true }).gte("intent_score", 15).neq("status", "rejected"),
+      sb.from("dashboard_companies").select("id", { count: "exact", head: true }).eq("stage", "Outreach Draft"),
+      sb.from("countries").select("id", { count: "exact", head: true }).eq("focus", true),
+      sb.from("dashboard_recent_events").select("id", { count: "exact", head: true }).gte("observed_at", new Date(Date.now() - 7 * 86400000).toISOString())
+    ]);
+    const err = all.error || hot.error || ready.error || ctry.error || ev.error;
+    if (err) { el.innerHTML = `<div class="error">${esc(err.message)}</div>`; return; }
+    el.innerHTML = `
+      <div class="tile"><div class="v">${all.count ?? 0}</div><div class="k micro">Companies tracked</div></div>
+      <div class="tile accent"><div class="v">${hot.count ?? 0}</div><div class="k micro">Hot accounts</div></div>
+      <div class="tile"><div class="v">${ev.count ?? 0}</div><div class="k micro">Signals · 7 days</div></div>
+      <div class="tile"><div class="v">${ctry.count ?? 0}</div><div class="k micro">Countries in sweep</div></div>
+      <div class="tile gold"><div class="v">${ready.count ?? 0}</div><div class="k micro">Outreach ready</div></div>
+    `;
   }
 
   async function loadStages() {
@@ -347,15 +445,27 @@
     const strip = document.getElementById("stageStrip");
     if (error) { strip.innerHTML = `<div class="error">${esc(error.message)}</div>`; return; }
     const counts = Object.fromEntries((data || []).map(r => [r.stage, r.company_count]));
-    strip.innerHTML = STAGE_ORDER.map(name => `
-      <div class="stage-card">
+    strip.innerHTML = STAGE_ORDER.map((name, i) => `
+      <div class="stage">
+        <div class="idx">0${i + 1}</div>
         <div class="n">${counts[name] || 0}</div>
         <div class="label">${esc(name)}</div>
       </div>
     `).join("");
   }
 
-  let companies = [];
+  function queueRow(c, i, withPriority) {
+    const tier = tierOf(c.intent_score);
+    const pct = Math.max(4, Math.min(100, Math.round((c.intent_score || 0) * 4)));
+    return `
+      <tr data-i="${i}">
+        <td><div class="co-name">${esc(c.company_name)}</div><div class="co-sub">${esc(c.registered_country || "")}</div></td>
+        <td>${esc(c.stage)}</td>
+        ${withPriority ? `<td>${esc(c.priority || "—")}</td>` : ""}
+        <td><div class="score-wrap"><span class="tag ${tier.cls}">${tier.label}</span><span class="score-bar"><i style="width:${pct}%"></i></span></div></td>
+        <td>${timeAgo(c.updated_at)}</td>
+      </tr>`;
+  }
 
   async function loadQueue() {
     const { data, error } = await sb.from("dashboard_companies")
@@ -364,35 +474,29 @@
       .order("intent_score", { ascending: false, nullsFirst: false })
       .limit(50);
     const body = document.getElementById("queueBody");
-    if (error) { body.innerHTML = `<tr><td colspan="5" class="error">${esc(error.message)}</td></tr>`; return; }
+    const preview = document.getElementById("previewBody");
+    if (error) {
+      body.innerHTML = `<tr><td colspan="5" class="error">${esc(error.message)}</td></tr>`;
+      preview.innerHTML = `<tr><td colspan="4" class="error">${esc(error.message)}</td></tr>`;
+      return;
+    }
     companies = data || [];
-    if (!companies.length) { body.innerHTML = `<tr><td colspan="5" class="loading">No companies yet.</td></tr>`; return; }
-    body.innerHTML = companies.map((c, i) => {
-      const tier = tierOf(c.intent_score);
-      const pct = Math.max(4, Math.min(100, Math.round((c.intent_score || 0) * 4)));
-      return `
-        <tr data-i="${i}">
-          <td>
-            <div class="company-name">${esc(c.company_name)}</div>
-            <div class="company-sub">${esc(c.registered_country || "")}</div>
-          </td>
-          <td>${esc(c.stage)}</td>
-          <td>${esc(c.priority || "—")}</td>
-          <td>
-            <span class="tag ${tier.cls}">${tier.label}</span>
-            <div class="score-bar"><i style="width:${pct}%"></i></div>
-          </td>
-          <td>${timeAgo(c.updated_at)}</td>
-        </tr>`;
-    }).join("");
-    body.querySelectorAll("tr[data-i]").forEach(tr => {
+    if (!companies.length) {
+      body.innerHTML = `<tr><td colspan="5" class="loading">No companies yet.</td></tr>`;
+      preview.innerHTML = `<tr><td colspan="4" class="loading">No companies yet.</td></tr>`;
+      return;
+    }
+    body.innerHTML = companies.map((c, i) => queueRow(c, i, true)).join("");
+    preview.innerHTML = companies.slice(0, 8).map((c, i) => queueRow(c, i, false)).join("");
+    document.querySelectorAll("#queueBody tr[data-i], #previewBody tr[data-i]").forEach(tr => {
       tr.addEventListener("click", () => selectCompany(parseInt(tr.dataset.i, 10), tr));
     });
   }
 
   function selectCompany(i, tr) {
-    document.querySelectorAll("#queueBody tr").forEach(r => r.classList.remove("selected"));
-    tr.classList.add("selected");
+    // clicking a preview row jumps to the Pipeline view with the company open
+    document.querySelector('#nav a[data-view="pipeline"]').click();
+    document.querySelectorAll("#queueBody tr").forEach(r => r.classList.toggle("selected", r.dataset.i == i));
     const c = companies[i];
     const panel = document.getElementById("detailPanel");
     const field = (label, val) => val ? `
@@ -410,33 +514,45 @@
     `;
   }
 
-  async function loadFeed() {
-    const { data, error } = await sb.from("dashboard_recent_events").select("*").limit(30);
-    const feed = document.getElementById("feed");
-    if (error) { feed.innerHTML = `<div class="feed-item error">${esc(error.message)}</div>`; return; }
-    if (!data || !data.length) { feed.innerHTML = `<div class="feed-item loading">No signals observed yet.</div>`; return; }
-    feed.innerHTML = data.map(e => `
+  function feedItemHtml(e) {
+    return `
       <div class="feed-item">
         <div class="row1">
           <span class="${e.polarity === 'negative' ? 'pol-negative' : 'pol-positive'}">${esc(e.company_name)} — ${esc(e.signal_name || e.event_type)}</span>
           <span class="when">${timeAgo(e.observed_at)}</span>
         </div>
         <div class="row2">${esc(e.summary || "")}</div>
-      </div>
-    `).join("");
+      </div>`;
   }
 
-  // ---------- Country focus panel ----------
+  async function loadFeed() {
+    const { data, error } = await sb.from("dashboard_recent_events").select("*").limit(30);
+    const feed = document.getElementById("feed");
+    const preview = document.getElementById("previewFeed");
+    if (error) {
+      feed.innerHTML = `<div class="error">${esc(error.message)}</div>`;
+      preview.innerHTML = `<div class="error">${esc(error.message)}</div>`;
+      return;
+    }
+    if (!data || !data.length) {
+      feed.innerHTML = `<div class="loading">No signals observed yet.</div>`;
+      preview.innerHTML = `<div class="loading">No signals observed yet.</div>`;
+      return;
+    }
+    feed.innerHTML = data.map(feedItemHtml).join("");
+    preview.innerHTML = data.slice(0, 5).map(feedItemHtml).join("");
+  }
+
   async function loadFocus() {
     const list = document.getElementById("focusList");
     const { data, error } = await sb.from("countries")
       .select("country,status,focus")
       .in("status", ["active", "testing"])
       .order("country");
-    if (error) { list.innerHTML = `<div class="feed-item error">${esc(error.message)}</div>`; return; }
-    if (!data || !data.length) { list.innerHTML = `<div class="feed-item loading">No active countries yet.</div>`; return; }
+    if (error) { list.innerHTML = `<div class="error">${esc(error.message)}</div>`; return; }
+    if (!data || !data.length) { list.innerHTML = `<div class="loading">No active countries yet.</div>`; return; }
     list.innerHTML = data.map(c => `
-      <div class="focus-row">
+      <div class="row">
         <div><span class="name">${esc(c.country)}</span><span class="status-tag">${esc(c.status)}</span></div>
         <label class="switch">
           <input type="checkbox" data-country="${esc(c.country)}" ${c.focus ? "checked" : ""} ${myRole === "viewer" ? "disabled" : ""} />
@@ -447,25 +563,20 @@
     list.querySelectorAll('input[type="checkbox"]').forEach(cb => {
       cb.addEventListener("change", async () => {
         cb.disabled = true;
-        const { error } = await sb.from("countries")
-          .update({ focus: cb.checked })
-          .eq("country", cb.dataset.country);
-        cb.disabled = false;
+        const { error } = await sb.from("countries").update({ focus: cb.checked }).eq("country", cb.dataset.country);
+        cb.disabled = myRole === "viewer";
         if (error) { cb.checked = !cb.checked; alert("Couldn't save: " + error.message); }
       });
     });
   }
 
-  // ---------- Access (share) panel ----------
-  const ROLE_LABELS = { viewer: "Viewer", editor: "Editor", admin: "Admin" };
-
   async function loadAccess() {
     const list = document.getElementById("accessList");
     document.getElementById("accessAdd").classList.toggle("hidden", myRole !== "admin");
     const { data, error } = await sb.from("dashboard_admins").select("email,role").order("email");
-    if (error) { list.innerHTML = `<div class="feed-item error">${esc(error.message)}</div>`; return; }
+    if (error) { list.innerHTML = `<div class="error">${esc(error.message)}</div>`; return; }
     list.innerHTML = (data || []).map(a => `
-      <div class="focus-row">
+      <div class="row">
         <div><span class="name">${esc(a.email)}</span>${a.email === myEmail ? '<span class="status-tag">you</span>' : ""}</div>
         <div class="access-controls">
           ${myRole === "admin" ? `
@@ -511,10 +622,10 @@
 
   async function refresh() {
     document.getElementById("asOf").textContent = "updated " + new Date().toLocaleTimeString();
-    await Promise.all([loadStages(), loadQueue(), loadFeed(), loadFocus(), loadAccess()]);
+    await Promise.all([loadStats(), loadStages(), loadQueue(), loadFeed(), loadFocus(), loadAccess()]);
   }
 
-  setInterval(() => { if (!appWrap.classList.contains("hidden")) refresh(); }, 60000);
+  setInterval(() => { if (!app.classList.contains("hidden")) refresh(); }, 60000);
 </script>
 </body>
 </html>
