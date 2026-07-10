@@ -38,8 +38,9 @@
   header.top img { height: 34px; width: auto; }
   header.top .title { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
   header.top .sub { font-size: 22px; font-weight: 600; margin-top: 2px; }
-  .meta { font-size: 12px; color: var(--ink-soft); text-align: right; }
+  .meta { font-size: 12px; color: var(--ink-soft); text-align: right; display: flex; align-items: center; gap: 14px; }
   .meta .dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--green); margin-right:6px; }
+  .meta .signout { color: var(--ink-soft); text-decoration: underline; cursor: pointer; background: none; border: none; font-size: 12px; font-family: inherit; padding: 0; }
 
   section { margin-bottom: 44px; }
   h2 {
@@ -103,10 +104,69 @@
 
   .loading, .error { padding: 40px; text-align: center; color: var(--ink-soft); font-size: 13px; }
   .error { color: var(--amber); }
+
+  /* Auth gate */
+  #authGate {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .gate-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: var(--shadow); padding: 32px; width: 100%; max-width: 340px; text-align: center;
+  }
+  .gate-card img { height: 30px; margin-bottom: 18px; }
+  .gate-card h1 { font-size: 15px; margin: 0 0 22px; color: var(--ink-soft); font-weight: 600; letter-spacing: .02em; }
+  .gate-card input {
+    width: 100%; padding: 11px 13px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 14px; margin-bottom: 10px; font-family: inherit; background: var(--cream);
+  }
+  .gate-card button {
+    width: 100%; padding: 11px 13px; border: none; border-radius: 8px; background: var(--green);
+    color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .gate-card button:disabled { opacity: .55; cursor: default; }
+  .gate-card .note { font-size: 12px; color: var(--ink-soft); margin-top: 14px; line-height: 1.5; }
+  .gate-card .note.err { color: var(--amber); }
+  .hidden { display: none !important; }
+
+  /* Country focus panel */
+  .focus-list { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+  .focus-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13.5px;
+  }
+  .focus-row:last-child { border-bottom: none; }
+  .focus-row .name { font-weight: 600; }
+  .focus-row .status-tag { font-size: 10.5px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .04em; margin-left: 8px; }
+  .switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch .slider {
+    position: absolute; inset: 0; background: var(--border); border-radius: 22px; cursor: pointer; transition: background .15s;
+  }
+  .switch .slider::before {
+    content: ""; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px;
+    background: #fff; border-radius: 50%; transition: transform .15s; box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  }
+  .switch input:checked + .slider { background: var(--green); }
+  .switch input:checked + .slider::before { transform: translateX(18px); }
+  .switch input:disabled + .slider { opacity: .5; cursor: default; }
+  .focus-note { font-size: 12px; color: var(--ink-soft); margin-top: 10px; }
 </style>
 </head>
 <body>
-<div class="wrap">
+
+<div id="authGate">
+  <div class="gate-card">
+    <img src="https://minzelis.com/wp-content/uploads/2025/07/minzelis-logo-scaled.png" alt="Minzelis" />
+    <h1>AI SDR Pipeline — sign in</h1>
+    <form id="emailForm">
+      <input type="email" id="emailInput" placeholder="you@minzelis.com" autocomplete="email" required />
+      <button type="submit" id="emailBtn">Send sign-in link</button>
+    </form>
+    <div class="note" id="gateNote"></div>
+  </div>
+</div>
+
+<div class="wrap hidden" id="appWrap">
   <header class="top">
     <div class="brand">
       <img src="https://minzelis.com/wp-content/uploads/2025/07/minzelis-logo-scaled.png" alt="Minzelis" />
@@ -115,7 +175,7 @@
         <div class="sub">Live Overview</div>
       </div>
     </div>
-    <div class="meta"><span class="dot"></span><span id="asOf">loading…</span></div>
+    <div class="meta"><span class="dot"></span><span id="asOf">loading…</span><button class="signout" id="signOutBtn">sign out</button></div>
   </header>
 
   <section>
@@ -139,6 +199,12 @@
   </section>
 
   <section>
+    <h2>Country Focus</h2>
+    <div class="focus-list" id="focusList"><div class="feed-item loading">Loading…</div></div>
+    <div class="focus-note">Only countries flagged here are covered by tomorrow's scheduled sweep. Toggling off doesn't change a country's lifecycle stage — it just pauses the daily sweep for it.</div>
+  </section>
+
+  <section>
     <h2>Recent Signals</h2>
     <div class="feed-wrap" id="feed"><div class="feed-item loading">Loading…</div></div>
   </section>
@@ -152,6 +218,72 @@
 
   const STAGE_ORDER = ["Intent","Discovery","Lead Qualify","Commercial Qualify","Deep Research","Asset Brief","Outreach Draft"];
 
+  function esc(s) {
+    if (s == null) return "";
+    return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  }
+
+  // ---------- Auth gate ----------
+  const authGate = document.getElementById("authGate");
+  const appWrap = document.getElementById("appWrap");
+  const emailForm = document.getElementById("emailForm");
+  const emailInput = document.getElementById("emailInput");
+  const emailBtn = document.getElementById("emailBtn");
+  const gateNote = document.getElementById("gateNote");
+
+  function setNote(msg, isErr) {
+    gateNote.textContent = msg || "";
+    gateNote.classList.toggle("err", !!isErr);
+  }
+
+  emailForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    emailBtn.disabled = true;
+    setNote("Sending link…");
+    const email = emailInput.value.trim();
+    const redirectTo = window.location.origin + window.location.pathname;
+    const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: redirectTo } });
+    emailBtn.disabled = false;
+    if (error) { setNote(error.message, true); return; }
+    emailInput.disabled = true;
+    emailBtn.disabled = true;
+    setNote("Link sent to " + email + " — open it on this device to sign in.");
+  });
+
+  document.getElementById("signOutBtn").addEventListener("click", async () => {
+    await sb.auth.signOut();
+  });
+
+  async function showApp() {
+    const { data, error } = await sb.rpc("is_dashboard_admin");
+    if (error || data !== true) {
+      await sb.auth.signOut();
+      authGate.classList.remove("hidden");
+      appWrap.classList.add("hidden");
+      emailInput.disabled = false;
+      emailBtn.disabled = false;
+      setNote("That email isn't on the access list. Ask Aslam to add it.", true);
+      return;
+    }
+    authGate.classList.add("hidden");
+    appWrap.classList.remove("hidden");
+    refresh();
+  }
+
+  function showGate() {
+    appWrap.classList.add("hidden");
+    authGate.classList.remove("hidden");
+  }
+
+  sb.auth.onAuthStateChange((event, session) => {
+    if (session) showApp(); else showGate();
+  });
+
+  sb.auth.getSession().then(({ data: { session } }) => {
+    if (session) showApp();
+  });
+
+  // ---------- Dashboard data (unchanged logic, now behind auth) ----------
   function tierOf(score) {
     if (score == null) return { label: "COLD", cls: "cold" };
     if (score >= 15) return { label: "HOT", cls: "hot" };
@@ -167,11 +299,6 @@
     if (diffH < 24) return diffH + "h ago";
     const diffD = Math.round(diffH / 24);
     return diffD + "d ago";
-  }
-
-  function esc(s) {
-    if (s == null) return "";
-    return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
   }
 
   async function loadStages() {
@@ -258,13 +385,42 @@
     `).join("");
   }
 
-  async function refresh() {
-    document.getElementById("asOf").textContent = "updated " + new Date().toLocaleTimeString();
-    await Promise.all([loadStages(), loadQueue(), loadFeed()]);
+  // ---------- Country focus panel ----------
+  async function loadFocus() {
+    const list = document.getElementById("focusList");
+    const { data, error } = await sb.from("countries")
+      .select("country,status,focus")
+      .in("status", ["active", "testing"])
+      .order("country");
+    if (error) { list.innerHTML = `<div class="feed-item error">${esc(error.message)}</div>`; return; }
+    if (!data || !data.length) { list.innerHTML = `<div class="feed-item loading">No active countries yet.</div>`; return; }
+    list.innerHTML = data.map(c => `
+      <div class="focus-row">
+        <div><span class="name">${esc(c.country)}</span><span class="status-tag">${esc(c.status)}</span></div>
+        <label class="switch">
+          <input type="checkbox" data-country="${esc(c.country)}" ${c.focus ? "checked" : ""} />
+          <span class="slider"></span>
+        </label>
+      </div>
+    `).join("");
+    list.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener("change", async () => {
+        cb.disabled = true;
+        const { error } = await sb.from("countries")
+          .update({ focus: cb.checked })
+          .eq("country", cb.dataset.country);
+        cb.disabled = false;
+        if (error) { cb.checked = !cb.checked; alert("Couldn't save: " + error.message); }
+      });
+    });
   }
 
-  refresh();
-  setInterval(refresh, 60000);
+  async function refresh() {
+    document.getElementById("asOf").textContent = "updated " + new Date().toLocaleTimeString();
+    await Promise.all([loadStages(), loadQueue(), loadFeed(), loadFocus()]);
+  }
+
+  setInterval(() => { if (!appWrap.classList.contains("hidden")) refresh(); }, 60000);
 </script>
 </body>
 </html>
