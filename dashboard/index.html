@@ -165,7 +165,8 @@
   @media (max-width: 1000px) { .split { grid-template-columns: 1fr; } }
   .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); padding: 20px; position: sticky; top: 20px; }
   .panel h3 { margin: 0 0 2px; font-size: 16px; }
-  .panel .website { font-size: 12px; color: var(--green); margin-bottom: 16px; word-break: break-all; }
+  .panel .website { font-size: 12px; color: var(--green); margin-bottom: 16px; word-break: break-all; display: inline-block; text-decoration: none; cursor: pointer; }
+  .panel .website:hover { text-decoration: underline; }
   .panel .field { margin-bottom: 14px; }
   .panel .field .k { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 3px; font-weight: 600; }
   .panel .field .v { font-size: 13px; line-height: 1.55; color: var(--ink-2); white-space: pre-wrap; }
@@ -183,6 +184,43 @@
   .feed-item .when { font-size: 11px; color: var(--ink-3); white-space: nowrap; }
   .pol-positive { color: var(--green); }
   .pol-negative { color: var(--gold); }
+  .feed-item .row4 {
+    font-size: 12px; margin-top: 7px; padding: 7px 10px; border-radius: 8px;
+    background: var(--green-soft); color: var(--ink); line-height: 1.4;
+  }
+  .feed-item .row4 b { color: var(--green); font-weight: 700; }
+  .feed-item .row4.negative { background: var(--gold-soft); }
+  .feed-item .row4.negative b { color: var(--gold); }
+
+  /* ask / command box */
+  .ask-box textarea {
+    width: 100%; min-height: 84px; padding: 12px 14px; border: 1px solid var(--border-2);
+    border-radius: 12px; font-size: 13.5px; font-family: inherit; background: var(--page);
+    color: var(--ink); resize: vertical; line-height: 1.5;
+  }
+  .ask-box textarea::placeholder { color: var(--ink-3); }
+  .ask-box .ask-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+  .ask-box button, .btn-primary {
+    padding: 10px 18px; border: none; border-radius: 9px; background: var(--green);
+    color: #06230a; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
+    flex-shrink: 0;
+  }
+  .ask-box button:disabled, .btn-primary:disabled { opacity: .55; cursor: default; }
+  .status-chip {
+    display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 100px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  }
+  .status-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .status-chip.pending { background: var(--cold-soft); color: var(--cold); }
+  .status-chip.in_progress { background: var(--gold-soft); color: var(--gold); }
+  .status-chip.done { background: var(--green-soft); color: var(--green); }
+  .status-chip.failed { background: rgba(208,59,59,0.14); color: var(--red); }
+  .req-item { padding: 13px 16px; border-bottom: 1px solid var(--border); }
+  .req-item:last-child { border-bottom: none; }
+  .req-item .row1 { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .req-item .prompt { font-size: 13px; font-weight: 600; }
+  .req-item .result { font-size: 12.5px; color: var(--ink-2); margin-top: 5px; line-height: 1.5; }
+  .req-item .when { font-size: 11px; color: var(--ink-3); margin-top: 4px; }
 
   /* countries + access rows */
   .row-list .row {
@@ -193,6 +231,8 @@
   .row-list .name { font-weight: 600; }
   .row-list .status-tag { font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .08em; margin-left: 8px; }
   .note { font-size: 12px; color: var(--ink-3); margin-top: 10px; line-height: 1.5; }
+  .note.err { color: var(--red); }
+  .note a { color: var(--gold); }
 
   .switch { position: relative; width: 38px; height: 21px; flex-shrink: 0; }
   .switch input { opacity: 0; width: 0; height: 0; }
@@ -250,6 +290,7 @@
       <a data-view="overview" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Overview</a>
       <a data-view="pipeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Pipeline</a>
       <a data-view="signals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Signals</a>
+      <a data-view="ask"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20a8 8 0 1 0-6.3-3.1L4 20l3.4-1.4A7.96 7.96 0 0 0 12 20z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1.4.9-1.4 1.7v.3M12 16.2v.1"/></svg>Ask</a>
       <a data-view="countries"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 4 5.7 4 9s-1.5 6.4-4 9c-2.5-2.6-4-5.7-4-9s1.5-6.4 4-9z"/></svg>Countries</a>
       <a data-view="access"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.2 3.4-5 6.5-5s5.7 1.8 6.5 5"/><circle cx="17.5" cy="9.5" r="2.5"/><path d="M15.5 15.2c2.8.2 5 1.7 5.8 4.3"/></svg>Access</a>
     </nav>
@@ -283,6 +324,10 @@
         </table></div>
       </div>
       <div class="block">
+        <span class="micro">Recommended actions</span>
+        <div class="card" id="recommendedActions"><div class="loading">Loading…</div></div>
+      </div>
+      <div class="block">
         <span class="micro">Latest signals</span>
         <div class="card" id="previewFeed"><div class="loading">Loading…</div></div>
       </div>
@@ -304,8 +349,35 @@
       <div class="card" id="feed"><div class="loading">Loading…</div></div>
     </section>
 
+    <!-- ASK -->
+    <section class="view" data-view="ask">
+      <div class="block">
+        <div class="card ask-box" style="padding:16px 18px;">
+          <form id="askForm">
+            <textarea id="askInput" placeholder="e.g. find importers of Ahmed Foods in Austria — or — advance the companies in Lead Qualify that don't need my attention to the next step"></textarea>
+            <div class="ask-row">
+              <button type="submit" id="askBtn">Run</button>
+            </div>
+          </form>
+        </div>
+        <div class="note" id="askNote">Requests are picked up by the hourly Dashboard Command Queue Routine, not instantly — check back here for the result. Viewers can look; editors and admins can submit.</div>
+      </div>
+      <div class="block">
+        <span class="micro">Request history</span>
+        <div class="card" id="askHistory"><div class="loading">Loading…</div></div>
+      </div>
+    </section>
+
     <!-- COUNTRIES -->
     <section class="view" data-view="countries">
+      <div class="card" style="padding:16px 18px; display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:14px;">
+        <div>
+          <span class="micro" style="display:block; margin-bottom:4px;">Stage 0 sweep</span>
+          <span style="color:var(--ink-2); font-size:13px;">Runs automatically every day at 5:00 AM IST. Use this to run it right now instead.</span>
+        </div>
+        <button type="button" id="runSweepBtn" class="btn-primary">Run Sweep Now</button>
+      </div>
+      <div class="note hidden" id="runSweepNote"></div>
       <div class="card row-list" id="focusList"><div class="loading">Loading…</div></div>
       <div class="note">Only countries switched on here are covered by tomorrow's 5:00 AM IST sweep. Switching one off pauses the daily sweep for it without removing the country from the system. Viewers can look; editors and admins can change switches.</div>
     </section>
@@ -334,7 +406,7 @@
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const STAGE_ORDER = ["Intent","Discovery","Lead Qualify","Commercial Qualify","Deep Research","Asset Brief","Outreach Draft"];
-  const VIEW_TITLES = { overview: "Overview", pipeline: "Pipeline", signals: "Signals", countries: "Countries", access: "Access" };
+  const VIEW_TITLES = { overview: "Overview", pipeline: "Pipeline", signals: "Signals", ask: "Ask", countries: "Countries", access: "Access" };
   const ROLE_LABELS = { viewer: "Viewer", editor: "Editor", admin: "Admin" };
 
   function esc(s) {
@@ -507,7 +579,7 @@
       <div class="field"><div class="k">${esc(label)}</div><div class="v">${esc(val)}</div></div>` : "";
     panel.innerHTML = `
       <h3>${esc(c.company_name)}</h3>
-      ${c.website ? `<div class="website">${esc(c.website)}</div>` : ""}
+      ${c.website ? `<a class="website" href="${esc(/^https?:\/\//i.test(c.website) ? c.website : "https://" + c.website)}" target="_blank" rel="noopener noreferrer">${esc(c.website)} ↗</a>` : ""}
       ${field("Score", c.score)}
       ${field("Enrichment Priority Score", c.enrichment_priority_score)}
       ${field("Intent Signals", c.intent_signals)}
@@ -520,37 +592,127 @@
 
   function feedItemHtml(e) {
     const srcRow = e.source_url
-      ? `<div class="row3">${esc(e.source || "open source")} ↗</div>`
+      ? `<div class="row3">${esc(e.source || "open source")} — open the post/article ↗</div>`
       : (e.source ? `<div class="row3">${esc(e.source)}</div>` : "");
+    const actionRow = e.recommended_action
+      ? `<div class="row4 ${e.polarity === 'negative' ? 'negative' : ''}"><b>Recommended:</b> ${esc(e.recommended_action)}</div>`
+      : "";
     const inner = `
         <div class="row1">
           <span class="${e.polarity === 'negative' ? 'pol-negative' : 'pol-positive'}">${esc(e.company_name)} — ${esc(e.signal_name || e.event_type)}</span>
           <span class="when">${timeAgo(e.observed_at)}</span>
         </div>
         <div class="row2">${esc(e.summary || "")}</div>
-        ${srcRow}`;
+        ${srcRow}
+        ${actionRow}`;
     return e.source_url
       ? `<a class="feed-item link" href="${esc(e.source_url)}" target="_blank" rel="noopener noreferrer">${inner}</a>`
       : `<div class="feed-item">${inner}</div>`;
   }
 
+  function recommendedActionsHtml(data) {
+    const seen = new Set();
+    const picks = [];
+    for (const e of data) {
+      if (!e.recommended_action || e.polarity === "negative") continue;
+      if (seen.has(e.company_id)) continue;
+      seen.add(e.company_id);
+      picks.push(e);
+      if (picks.length >= 8) break;
+    }
+    if (!picks.length) return `<div class="loading">No open recommendations right now.</div>`;
+    return picks.map(e => `
+      <div class="feed-item">
+        <div class="row1"><span class="pol-positive">${esc(e.company_name)} — ${esc(e.signal_name || e.event_type)}</span><span class="when">${timeAgo(e.observed_at)}</span></div>
+        <div class="row4"><b>Recommended:</b> ${esc(e.recommended_action)}</div>
+      </div>
+    `).join("");
+  }
+
   async function loadFeed() {
-    const { data, error } = await sb.from("dashboard_recent_events").select("*").limit(30);
+    const { data, error } = await sb.from("dashboard_recent_events").select("*").limit(60);
     const feed = document.getElementById("feed");
     const preview = document.getElementById("previewFeed");
+    const recommended = document.getElementById("recommendedActions");
     if (error) {
       feed.innerHTML = `<div class="error">${esc(error.message)}</div>`;
       preview.innerHTML = `<div class="error">${esc(error.message)}</div>`;
+      recommended.innerHTML = `<div class="error">${esc(error.message)}</div>`;
       return;
     }
     if (!data || !data.length) {
       feed.innerHTML = `<div class="loading">No signals observed yet.</div>`;
       preview.innerHTML = `<div class="loading">No signals observed yet.</div>`;
+      recommended.innerHTML = `<div class="loading">No signals observed yet.</div>`;
       return;
     }
     feed.innerHTML = data.map(feedItemHtml).join("");
     preview.innerHTML = data.slice(0, 5).map(feedItemHtml).join("");
+    recommended.innerHTML = recommendedActionsHtml(data);
   }
+
+  // ---------- Ask (dashboard command queue) ----------
+  function reqItemHtml(r) {
+    const status = r.status || "pending";
+    return `
+      <div class="req-item">
+        <div class="row1">
+          <span class="prompt">${esc(r.prompt)}</span>
+          <span class="status-chip ${esc(status)}">${esc(status.replace("_"," "))}</span>
+        </div>
+        ${r.result_summary ? `<div class="result">${esc(r.result_summary)}</div>` : ""}
+        <div class="when">${esc(r.requested_by || "")} · ${timeAgo(r.created_at)}</div>
+      </div>`;
+  }
+
+  async function loadAskHistory() {
+    const list = document.getElementById("askHistory");
+    const { data, error } = await sb.from("dashboard_requests").select("*").order("created_at", { ascending: false }).limit(30);
+    if (error) { list.innerHTML = `<div class="error">${esc(error.message)}</div>`; return; }
+    if (!data || !data.length) { list.innerHTML = `<div class="loading">No requests yet.</div>`; return; }
+    list.innerHTML = data.map(reqItemHtml).join("");
+  }
+
+  document.getElementById("askForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const input = document.getElementById("askInput");
+    const btn = document.getElementById("askBtn");
+    const prompt = input.value.trim();
+    if (!prompt) return;
+    if (myRole === "viewer") { alert("Viewers can't submit requests — ask an editor or admin."); return; }
+    btn.disabled = true;
+    const { error } = await sb.from("dashboard_requests").insert({ requested_by: myEmail, prompt });
+    btn.disabled = false;
+    if (error) { alert("Couldn't submit: " + error.message); return; }
+    input.value = "";
+    loadAskHistory();
+  });
+
+  document.getElementById("runSweepBtn").addEventListener("click", async () => {
+    if (myRole === "viewer") { alert("Viewers can't run the sweep — ask an editor or admin."); return; }
+    const btn = document.getElementById("runSweepBtn");
+    const note = document.getElementById("runSweepNote");
+    btn.disabled = true;
+    btn.textContent = "Starting…";
+    note.classList.remove("hidden", "err");
+    note.textContent = "Firing the Stage 0 sweep…";
+    try {
+      const res = await fetch("/api/run-sweep", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestedBy: myEmail }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `request failed (${res.status})`);
+      note.innerHTML = `Sweep started — <a href="${esc(data.session_url)}" target="_blank" rel="noopener">watch the session</a>.`;
+    } catch (err) {
+      note.classList.add("err");
+      note.textContent = "Couldn't start the sweep: " + err.message;
+    } finally {
+      btn.disabled = myRole === "viewer";
+      btn.textContent = "Run Sweep Now";
+    }
+  });
 
   async function loadFocus() {
     const list = document.getElementById("focusList");
@@ -631,7 +793,13 @@
 
   async function refresh() {
     document.getElementById("asOf").textContent = "updated " + new Date().toLocaleTimeString();
-    await Promise.all([loadStats(), loadStages(), loadQueue(), loadFeed(), loadFocus(), loadAccess()]);
+    await Promise.all([loadStats(), loadStages(), loadQueue(), loadFeed(), loadFocus(), loadAccess(), loadAskHistory()]);
+    document.getElementById("runSweepBtn").disabled = myRole === "viewer";
+    document.getElementById("askBtn").disabled = myRole === "viewer";
+    document.getElementById("askInput").disabled = myRole === "viewer";
+    document.getElementById("askInput").placeholder = myRole === "viewer"
+      ? "Viewers can look but not submit — ask an editor or admin to run this."
+      : "e.g. find importers of Ahmed Foods in Austria — or — advance the companies in Lead Qualify that don't need my attention to the next step";
   }
 
   setInterval(() => { if (!app.classList.contains("hidden")) refresh(); }, 60000);
